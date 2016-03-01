@@ -11,6 +11,7 @@ TokenStream *LexicalAnalysis(std::string input_filename) {
 
     ifs.open (input_filename.c_str(), std::ios::in);
     if(!ifs) return NULL;
+
     while (ifs && getline(ifs, cur_line)) {
         char next_char;
         std::string line;
@@ -20,13 +21,12 @@ TokenStream *LexicalAnalysis(std::string input_filename) {
 
         while (index < length) {
             next_char = cur_line.at(index++);
-
             if (next_char == EOF) {
                 token_str = EOF;
                 next_token = new Token(token_str, TOK_EOF, line_num);
             } else if (isspace(next_char)) {
                 continue;
-            } else/* if (isalpha(next_char)) */{
+            } else if (isalpha(next_char)) {
                 while (isalnum(next_char)) {
                     token_str += next_char;
                     if (index == length) {
@@ -37,20 +37,28 @@ TokenStream *LexicalAnalysis(std::string input_filename) {
                 if (!isalnum(next_char)) {
                     index--;
                 }
-                if (token_str == "(") {
-                    next_token = new Token(token_str, TOK_LPA, line_num);
-                } else if (token_str == ")") {
-                    next_token = new Token(token_str, TOK_RPA, line_num);
-                } else if (token_str == ".") {
-                    next_token = new Token(token_str, TOK_DOT, line_num);
-                } else if (token_str == "lambda") {
+                if (token_str == "lambda") {
                     next_token = new Token(token_str, TOK_LAM, line_num);
                 } else {
                     next_token = new Token (token_str, TOK_ID, line_num);
                 }
+            } else {
+                if (next_char == '(') {
+                    token_str += next_char;
+                    next_token = new Token(token_str, TOK_LPA, line_num);
+                } else if (next_char == ')') {
+                    token_str += next_char;
+                    next_token = new Token(token_str, TOK_RPA, line_num);
+                } else if (next_char == '.') {
+                    token_str += next_char;
+                    next_token = new Token(token_str, TOK_DOT, line_num);
+                } else {
+                    std::cout << "lex error" << std::endl;
+                }
             }
-        }
         tokens->pushToken(next_token);
+        token_str.clear();
+        }
         token_str.clear();
         line_num++;
     }
@@ -109,3 +117,11 @@ bool TokenStream::printTokens() {
     return true;
 }
 
+
+/****************************************************************************************************/
+
+int main(int argc, char** argv) {
+    TokenStream *tokens = LexicalAnalysis(argv[1]);
+    tokens->printTokens();
+    return 1;
+}

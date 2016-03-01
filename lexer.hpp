@@ -1,6 +1,7 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
+#include <iostream>
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
@@ -16,6 +17,7 @@ enum TokenType {
     TOK_RPA,
     TOK_EOF
 };
+
 
 typedef class Token {
     private:
