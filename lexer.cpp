@@ -49,6 +49,9 @@ TokenStream *LexicalAnalysis(std::string input_filename) {
                 } else if (next_char == ')') {
                     token_str += next_char;
                     next_token = new Token(token_str, TOK_RPA, line_num);
+                } else if (next_char == '\\') {
+                    token_str += next_char;
+                    next_token = new Token(token_str, TOK_LAM, line_num);
                 } else if (next_char == '.') {
                     token_str += next_char;
                     next_token = new Token(token_str, TOK_DOT, line_num);
@@ -119,9 +122,9 @@ bool TokenStream::printTokens() {
 
 
 /****************************************************************************************************/
-/*
+
 int main(int argc, char** argv) {
     TokenStream *tokens = LexicalAnalysis(argv[1]);
     tokens->printTokens();
     return 1;
-}*/
+}
