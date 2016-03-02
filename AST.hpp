@@ -47,15 +47,17 @@ class ToplevelAST {
 class TermAST : public BaseAST{
     private:
         //std::string TType;
-        vector<BaseAST*> Terms;
+        vector<TermAST*> Terms;
         VarAST *Var;
         TermAST *Term;
+        std::string Var;
 
     public:
-        TermAST(vector<BaseAST*> &terms) 
+        TermAST(vector<TermAST*> &terms) 
             : BaseAST(AppTermID), Terms(terms) {}
         TermAST(VarAST *var, TermAST term) 
             : BaseAST(AbsTermID), Var(var), Term(term) {}
+        VarAST(const std::string var) : AstID(VarID), Var(var) {}
         ~TermAST();
         BaseAST *getTerm() {
             if(ID == AbsTermID) {
@@ -72,8 +74,12 @@ class TermAST : public BaseAST{
                 return Terms.at(i);
             }
         }
+        std::string getVar() {
+            return Var;
+        }
 };
 
+/*
 class VarAST : public BaseAST {
     private:
         std::string Var;
@@ -83,7 +89,6 @@ class VarAST : public BaseAST {
         std::string getVar() {
             return Var;
         }
-/*
 class AppTermAST {
     private:
         vector<BaseAST*> Terms;

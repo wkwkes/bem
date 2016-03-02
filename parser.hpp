@@ -22,10 +22,9 @@ typedef calss Parser {
 
         bool visitToplevel();
         //bool visitCommand();
-        bool *visitTerm(ToplevelAST *TA);
-        AppTermAST *visitAppTerm();
-        ATermAST *visitATerm();
-
+        TermAST *visitTerm();
+        TermAST *visitAppTerm();
+        TermAST *visitATerm();
     public:
         Parser(std::string filename);
         ~Parser() {
