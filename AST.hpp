@@ -24,6 +24,7 @@ class BaseAST {
 
     public:
         BaseAST(AstID id) : ID(id) {}
+        virtual ~BaseAST() {}
         AstID getValueID() const {
             return ID;
         }
@@ -35,9 +36,9 @@ class ToplevelAST {
         TermAST *Term;
 
     public:
-        ToplevelAST() {}
+        ToplevelAST() : ID(ToplevelID) {}
         ~ToplevelAST();
-        bool empty();
+        //bool empty();
         TermAST *getTerm() {
             return Term;
         }
@@ -55,7 +56,7 @@ class TermAST : public BaseAST{
             : BaseAST(AppTermID), Terms(terms) {}
         TermAST(VarAST *var, TermAST term) 
             : BaseAST(AbsTermID), Var(var), Term(term) {}
-        ~AppTermAST();
+        ~TermAST();
         BaseAST *getTerm() {
             if(ID == AbsTermID) {
                 return Term;
