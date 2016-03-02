@@ -15,22 +15,21 @@
 typedef calss Parser {
     private:
         TokenStream * Tokens;
-        TranslationUnitAST *TU;
+        ToplevelAST *TA;
 
         //std::vector<std::string> VariableTable;
         //std::map<std::string, int> Proto
 
         bool visitToplevel();
         //bool visitCommand();
-        TermAST *visitTerm();
+        bool *visitTerm(ToplevelAST *TA);
         AppTermAST *visitAppTerm();
         ATermAST *visitATerm();
-        VarAST *visitVar();
 
     public:
         Parser(std::string filename);
         ~Parser() {
-            SAFE_DELETE(TU);
+            SAFE_DELETE(TA);
             SAFE_DELETE(Tokens);
         }
         bool doParse();
