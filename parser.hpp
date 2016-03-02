@@ -25,6 +25,7 @@ typedef calss Parser {
         TermAST *visitTerm();
         AppTermAST *visitAppTerm();
         ATermAST *visitATerm();
+        VarAST *visitVar();
 
     public:
         Parser(std::string filename);
