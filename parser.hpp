@@ -8,13 +8,13 @@
 #include<map>
 #include<string>
 #include<vector>
-//#include"APP.hpp"
-//#include"AST.hpp"
+#include"APP.hpp"
+#include"AST.hpp"
 #include"lexer.hpp"
 
 typedef calss Parser {
     private:
-        TokenStream * Tokens;
+        TokenStream *Tokens;
         ToplevelAST *TA;
 
         //std::vector<std::string> VariableTable;
@@ -23,8 +23,6 @@ typedef calss Parser {
         bool visitToplevel();
         //bool visitCommand();
         TermAST *visitTerm();
-        TermAST *visitAppTerm();
-        TermAST *visitATerm();
     public:
         Parser(std::string filename);
         ~Parser() {

@@ -47,13 +47,13 @@ class ToplevelAST {
 class TermAST : public BaseAST{
     private:
         //std::string TType;
-        vector<TermAST*> Terms;
+        std::vector<TermAST*> Terms;
         VarAST *Var;
         TermAST *Term;
         std::string Var;
 
     public:
-        TermAST(vector<TermAST*> &terms) 
+        TermAST(std::vector<TermAST*> &terms) 
             : BaseAST(AppTermID), Terms(terms) {}
         TermAST(VarAST *var, TermAST term) 
             : BaseAST(AbsTermID), Var(var), Term(term) {}
