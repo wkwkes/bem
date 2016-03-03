@@ -52,6 +52,7 @@ class ToplevelAST : public BaseAST{
                 std::cout << "key : "<< itr.first << ", val : " << itr.second<<std::endl;
             }
         }
+        void toDeBrujin();
 };
 
 class TermAST : public BaseAST{
@@ -59,7 +60,7 @@ class TermAST : public BaseAST{
         std::vector<TermAST*> Terms;
         TermAST *Term;
         std::string Name;
-        //int DIndex;
+        int DIndex;
 
     public:
         TermAST(std::vector<TermAST*> &terms) 
@@ -87,13 +88,14 @@ class TermAST : public BaseAST{
         std::string getVar() {
             return Name;
         }
-        void Print();/*
+        void Print();
         void setDIndex(int n) {
             DIndex = n;
         }
         int getDIndex() {
             return DIndex;
-        }*/
+        }
+        void toDeBrujin();
 };
 
 /*
