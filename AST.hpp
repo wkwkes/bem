@@ -36,8 +36,10 @@ class ToplevelAST : public BaseAST{
     private:
         //std::vector<TermAST*> Terms;
         TermAST *Term;
+        std::map<std::string, int> Ctx;
 
     public:
+        ToplevelAST(TermAST *term, std::map<std::string, int> &ctx) : Term(term), BaseAST(ToplevelID), Ctx(ctx) {}
         ToplevelAST(TermAST *term) : Term(term), BaseAST(ToplevelID) {}
         ~ToplevelAST();
         //bool empty();
@@ -45,6 +47,11 @@ class ToplevelAST : public BaseAST{
             return Term;
         }
         void Print();
+        void PrintCtx() {
+            for(auto itr : Ctx) {
+                std::cout << "key : "<< itr.first << ", val : " << itr.second<<std::endl;
+            }
+        }
 };
 
 class TermAST : public BaseAST{

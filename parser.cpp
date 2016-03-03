@@ -3,9 +3,6 @@
 Parser::Parser(std::string filename) {
     Tokens = LexicalAnalysis(filename);
     Ctx = Tokens->getCtx();
-    for (auto itr : Ctx) {
-        std::cout <<"key:" <<itr.first <<", val:" <<itr.second  << std::endl;
-    }
     Tokens->printTokens();
 }
 
@@ -28,7 +25,7 @@ ToplevelAST &Parser::getAST() {
 
 bool Parser::visitToplevel() {
     //とりあえず一つのラムダ項のみ許す感じでいくが最終的にはwhileで処理する
-    TA = new ToplevelAST(visitTerm());
+    TA = new ToplevelAST(visitTerm(), Ctx);
     if(TA) {
         return true;
     }
@@ -94,6 +91,8 @@ int main(int argc, char **argv) {
     if(parser->doParse()) {
         std::cout << "success\n";
         parser->Print();
+        std::cout << "\nCtx\n\n"; 
+        parser->PrintCtx();
         std::cout << std::endl;
     } else {
         std::cout << "error exists\n";

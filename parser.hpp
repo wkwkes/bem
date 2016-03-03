@@ -41,6 +41,9 @@ typedef class Parser {
         std::map<std::string, int> &getCtx() {
             return Ctx;
         }
+        void PrintCtx() {
+            TA->PrintCtx();
+        }
 } Parser;
 
 #endif
