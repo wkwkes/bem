@@ -3,16 +3,16 @@
 
 #include <algorithm>
 #include <cstdio>
-#include <cstdliba>
+#include <cstdlib>
 
-#include<map>
-#include<string>
-#include<vector>
-#include"APP.hpp"
-#include"AST.hpp"
-#include"lexer.hpp"
+#include <map>
+#include <string>
+#include <vector>
+#include "APP.hpp"
+#include "AST.hpp"
+#include "lexer.hpp"
 
-typedef calss Parser {
+typedef class Parser {
     private:
         TokenStream *Tokens;
         ToplevelAST *TA;

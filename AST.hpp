@@ -1,6 +1,7 @@
 #ifndef AST_HPP
 #define AST_HPP
 
+#include <iostream>
 #include <string>
 #include <map>
 #include <vector>
@@ -19,7 +20,7 @@ enum AstID {
 };
 
 class BaseAST {
-    private:
+    protected:
         AstID ID;
 
     public:
@@ -30,13 +31,13 @@ class BaseAST {
         }
 };
 
-class ToplevelAST {
+class ToplevelAST : public BaseAST{
     private:
         //std::vector<TermAST*> Terms;
         TermAST *Term;
 
     public:
-        ToplevelAST() : ID(ToplevelID) {}
+        ToplevelAST(TermAST *term) : Term(term), BaseAST(ToplevelID) {}
         ~ToplevelAST();
         //bool empty();
         TermAST *getTerm() {
@@ -48,16 +49,15 @@ class TermAST : public BaseAST{
     private:
         //std::string TType;
         std::vector<TermAST*> Terms;
-        VarAST *Var;
         TermAST *Term;
-        std::string Var;
+        std::string Name;
 
     public:
         TermAST(std::vector<TermAST*> &terms) 
             : BaseAST(AppTermID), Terms(terms) {}
-        TermAST(VarAST *var, TermAST term) 
-            : BaseAST(AbsTermID), Var(var), Term(term) {}
-        VarAST(const std::string var) : AstID(VarID), Var(var) {}
+        TermAST(const std::string name, TermAST *term) 
+            : BaseAST(AbsTermID), Name(name), Term(term) {}
+        TermAST(const std::string name) : BaseAST(VarID), Name(name) {}
         ~TermAST();
         BaseAST *getTerm() {
             if(ID == AbsTermID) {
@@ -66,6 +66,7 @@ class TermAST : public BaseAST{
                 std::cout << "error in Term's Type\n";
                 return NULL;
             }
+        }
         BaseAST *getTerm(int i) {
             if(i>=Terms.size() || ID != AppTermID) {
                 std::cout << "error in Term's Type\n";
@@ -75,7 +76,7 @@ class TermAST : public BaseAST{
             }
         }
         std::string getVar() {
-            return Var;
+            return Name;
         }
 };
 

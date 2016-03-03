@@ -12,7 +12,6 @@ TermAST::~TermAST() {
         Terms.clear();
     }
     if (ID == AbsTermID) {
-        SAFE_DELETE(Var);
         SAFE_DELETE(Term);
     }
 }
