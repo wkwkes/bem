@@ -2,6 +2,10 @@
 
 Parser::Parser(std::string filename) {
     Tokens = LexicalAnalysis(filename);
+    Ctx = Tokens->getCtx();
+    for (auto itr : Ctx) {
+        std::cout <<"key:" <<itr.first <<", val:" <<itr.second  << std::endl;
+    }
     Tokens->printTokens();
 }
 

@@ -7,6 +7,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
 #include "APP.hpp"
 
 enum TokenType {
@@ -15,7 +16,8 @@ enum TokenType {
     TOK_DOT,
     TOK_LPA,
     TOK_RPA,
-    TOK_EOF
+    TOK_EOF,
+    TOK_DUM
 };
 
 
@@ -40,15 +42,20 @@ class TokenStream {
     private:
         std::vector<Token*> Tokens;
         int CurIndex;
-
+        std::map<std::string, int> Ctx;
+        int CurCtxIndex;
     public:
-        TokenStream() : CurIndex(0) {};
+        TokenStream() : CurIndex(0), CurCtxIndex(1) {}
         ~TokenStream();
 
         bool ungetToken(int Times=1);
         bool nextToken();
         bool pushToken(Token *token) {
             Tokens.push_back(token);
+            if (token->getTokenType() == TOK_ID &&
+                    Ctx[token->getTokenString()] == 0) {
+                Ctx[token->getTokenString()] = CurCtxIndex++;
+            }
             return true;
         }
         Token getToken();
@@ -65,6 +72,9 @@ class TokenStream {
         bool applyTokenIndex(int index) {
             CurIndex = index;
             return true;
+        }
+        std::map<std::string, int> &getCtx() {
+            return Ctx;
         }
 };
 

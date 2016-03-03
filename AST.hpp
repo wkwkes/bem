@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <utility>
 #include "APP.hpp"
 
 class BaseAST;
@@ -48,10 +49,10 @@ class ToplevelAST : public BaseAST{
 
 class TermAST : public BaseAST{
     private:
-        //std::string TType;
         std::vector<TermAST*> Terms;
         TermAST *Term;
         std::string Name;
+        //int DIndex;
 
     public:
         TermAST(std::vector<TermAST*> &terms) 
@@ -79,7 +80,13 @@ class TermAST : public BaseAST{
         std::string getVar() {
             return Name;
         }
-        void Print();
+        void Print();/*
+        void setDIndex(int n) {
+            DIndex = n;
+        }
+        int getDIndex() {
+            return DIndex;
+        }*/
 };
 
 /*

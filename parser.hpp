@@ -7,6 +7,7 @@
 
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 #include "APP.hpp"
 #include "AST.hpp"
@@ -16,13 +17,13 @@ typedef class Parser {
     private:
         TokenStream *Tokens;
         ToplevelAST *TA;
-
         //std::vector<std::string> VariableTable;
         //std::map<std::string, int> Proto
 
         bool visitToplevel();
         //bool visitCommand();
         TermAST *visitTerm();
+        std::map<std::string, int> Ctx;
     public:
         Parser(std::string filename);
         ~Parser() {
@@ -33,6 +34,12 @@ typedef class Parser {
         ToplevelAST &getAST();
         void Print() {
             TA->Print();
+        }/*
+        void setCtx(std::map<std::string, int> &ctx) {
+            Ctx = ctx;
+        }*/
+        std::map<std::string, int> &getCtx() {
+            return Ctx;
         }
 } Parser;
 
