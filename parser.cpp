@@ -33,24 +33,25 @@ bool Parser::visitToplevel() {
 
 TermAST *Parser::visitTerm() {
     if(Tokens->getCurType() == TOK_LAM) {
-        std::cout <<"TOK_LAM:" <<Tokens->getCurString() << std::endl;
+        //std::cout <<"TOK_LAM:" <<Tokens->getCurString() << std::endl;
         if(!Tokens->nextToken()) {//var
             std::cout << "error in lexer (visitTerm1)\n";
             return NULL;
         }
-        std::cout <<"var    :" <<Tokens->getCurString() << std::endl;
+        //std::cout <<"var    :" <<Tokens->getCurString() << std::endl;
         std::string var = Tokens->getCurString();
         if(!Tokens->nextToken()) {//DOT
             std::cout << "error in lexer (visitTerm2)\n";
             return NULL;
         }
-        std::cout <<"dot    :" <<Tokens->getCurString() << std::endl;
+        //std::cout <<"dot    :" <<Tokens->getCurString() << std::endl;
         if(!Tokens->nextToken()) {//term
             std::cout << "error in lexer (visitTerm1)\n";
             return NULL;
         }
-        std::cout <<"term   :" <<Tokens->getCurString() << std::endl;
+        //std::cout <<"term   :\n(";
         TermAST *term = visitTerm();
+        //std::cout <<")\n";
         return new TermAST(var, term);
     } else {
         std::vector<TermAST*> terms(0);
@@ -86,7 +87,7 @@ TermAST *Parser::visitTerm() {
 int main(int argc, char **argv) {
     Parser *parser = new Parser(argv[1]);
     std::cout << "start parsing \n";
-    if(!parser->doParse()) {
+    if(parser->doParse()) {
         std::cout << "success\n";
         parser->Print();
         std::cout << std::endl;

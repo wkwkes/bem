@@ -120,11 +120,3 @@ bool TokenStream::printTokens() {
     return true;
 }
 
-
-/****************************************************************************************************/
-/*
-int main(int argc, char** argv) {
-    TokenStream *tokens = LexicalAnalysis(argv[1]);
-    tokens->printTokens();
-    return 1;
-}*/

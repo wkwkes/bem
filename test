@@ -1,1 +1,1 @@
-(lambda x. y x z (lambda p. q w)) (lambda yyy.yy)
+(\x.x(\y.(y)(u)))(\q.(q)(w))(\e.(e)(r))
