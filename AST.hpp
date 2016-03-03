@@ -43,6 +43,7 @@ class ToplevelAST : public BaseAST{
         TermAST *getTerm() {
             return Term;
         }
+        void Print();
 };
 
 class TermAST : public BaseAST{
@@ -78,6 +79,7 @@ class TermAST : public BaseAST{
         std::string getVar() {
             return Name;
         }
+        void Print();
 };
 
 /*

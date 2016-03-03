@@ -2,11 +2,12 @@
 
 Parser::Parser(std::string filename) {
     Tokens = LexicalAnalysis(filename);
+    Tokens->printTokens();
 }
 
 bool Parser::doParse() {
     if(!Tokens) {
-        fprintf(stderr, "error at lexer \n");
+        fprintf(stderr, "error at lexer (doParse)\n");
         return false;
     } else {
         return visitToplevel();
@@ -32,15 +33,23 @@ bool Parser::visitToplevel() {
 
 TermAST *Parser::visitTerm() {
     if(Tokens->getCurType() == TOK_LAM) {
-        if(!Tokens->nextToken()) {//LAMBDA
+        std::cout <<"TOK_LAM:" <<Tokens->getCurString() << std::endl;
+        if(!Tokens->nextToken()) {//var
             std::cout << "error in lexer (visitTerm1)\n";
             return NULL;
         }
+        std::cout <<"var    :" <<Tokens->getCurString() << std::endl;
         std::string var = Tokens->getCurString();
         if(!Tokens->nextToken()) {//DOT
             std::cout << "error in lexer (visitTerm2)\n";
             return NULL;
         }
+        std::cout <<"dot    :" <<Tokens->getCurString() << std::endl;
+        if(!Tokens->nextToken()) {//term
+            std::cout << "error in lexer (visitTerm1)\n";
+            return NULL;
+        }
+        std::cout <<"term   :" <<Tokens->getCurString() << std::endl;
         TermAST *term = visitTerm();
         return new TermAST(var, term);
     } else {
@@ -73,12 +82,18 @@ TermAST *Parser::visitTerm() {
     }
 }
 
+
 int main(int argc, char **argv) {
     Parser *parser = new Parser(argv[1]);
+    std::cout << "start parsing \n";
     if(!parser->doParse()) {
         std::cout << "success\n";
+        parser->Print();
+        std::cout << std::endl;
     } else {
         std::cout << "error exists\n";
+        parser->Print();
+        std::cout << std::endl;
     }
 }
 
