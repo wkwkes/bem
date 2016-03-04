@@ -89,10 +89,13 @@ int main(int argc, char **argv) {
     Parser *parser = new Parser(argv[1]);
     std::cout << "start parsing \n";
     if(parser->doParse()) {
-        std::cout << "success\n";
-        parser->Print();
-        std::cout << "\nCtx\n\n"; 
+        std::cout << "success";
+        std::cout << "\nCtx\n"; 
+        parser->getToplevelAST()->toDeBrujin();
+        //parser->Print();
+        std::cout<<"\n\n";
         parser->PrintCtx();
+        parser->PrintD();
         std::cout << std::endl;
     } else {
         std::cout << "error exists\n";

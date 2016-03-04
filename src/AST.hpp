@@ -53,6 +53,7 @@ class ToplevelAST : public BaseAST{
             }
         }
         void toDeBrujin();
+        void PrintD();
 };
 
 class TermAST : public BaseAST{
@@ -64,10 +65,10 @@ class TermAST : public BaseAST{
 
     public:
         TermAST(std::vector<TermAST*> &terms) 
-            : BaseAST(AppTermID), Terms(terms) {}
+            : BaseAST(AppTermID), Terms(terms), DIndex(-1) {}
         TermAST(const std::string name, TermAST *term) 
-            : BaseAST(AbsTermID), Name(name), Term(term) {}
-        TermAST(const std::string name) : BaseAST(VarID), Name(name) {}
+            : BaseAST(AbsTermID), Name(name), Term(term), DIndex(-1) {}
+        TermAST(const std::string name) : BaseAST(VarID), Name(name), DIndex(-1) {}
         ~TermAST();
         BaseAST *getTerm() {
             if(ID == AbsTermID) {
@@ -95,41 +96,9 @@ class TermAST : public BaseAST{
         int getDIndex() {
             return DIndex;
         }
-        void toDeBrujin();
+        void toDeBrujin(std::map<std::string, int> &ctx, std::vector<std::string> env);
+        void PrintD();
+
 };
-
-/*
-class VarAST : public BaseAST {
-    private:
-        std::string Var;
-    public:
-        VarAST(const std::string var) : AstID(VarID), Var(var) {}
-        ~VarAST(){};
-        std::string getVar() {
-            return Var;
-        }
-class AppTermAST {
-    private:
-        vector<BaseAST*> Terms;
-    public:
-        AppTermAST(vector<BaseAST*> &terms) : Terms(terms) {}
-        ~AppTermAST();
-        BaseAST getTerm(int i) {
-            if(i>=Terms.size()) {
-                return NULL;
-            } else {
-                return Terms.at(i);
-            }
-        }
-};
-
-class AbsTermAST {
-    private:
-        VarAST *Var;
-        TermAST
-    public:
-*/
-
-
 
 #endif

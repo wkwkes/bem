@@ -44,6 +44,15 @@ typedef class Parser {
         void PrintCtx() {
             TA->PrintCtx();
         }
+        void PrintD() {
+            TA->PrintD();
+        }
+        ToplevelAST *getToplevelAST() {
+            return TA;
+        }
+        void toDeBrujin() {
+            TA->toDeBrujin();
+        }
 } Parser;
 
 #endif
