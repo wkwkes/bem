@@ -116,12 +116,21 @@ void TermAST::toDeBrujin(std::map<std::string, int> &ctx, std::vector<std::strin
         std::cout << "error in toDeBrujin()\n";
     }
 }
-/*
+
 void TermAST::shift(int d, int c) {
     if (ID == AppTermID) {
-        if()
+        if(Terms.size() < 2) {
+            std::cout << "error in shift :too few terms\n";
+            return;
+        }
+        Terms[0]->shift(d, c);
+        Terms[1]->shift(d, c);
     } else if (ID == AbsTermID) {
+        Term->shift(d, c+1);
     } else if (ID == VarID) {
+        if (c<=DIndex) {
+            DIndex += d;
+        }
     } else {
         std::cout << "error in shift (IDが変)\n";
     }
@@ -136,4 +145,3 @@ void TermAST::apply() {
 
 }
 
-*/
