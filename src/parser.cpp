@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
         std::cout << "success";
         std::cout << "\nCtx\n"; 
         parser->getToplevelAST()->toDeBrujin();
-        //parser->Print();
+        parser->Print();
         std::cout<<"\n\n";
         parser->PrintCtx();
         parser->PrintD();

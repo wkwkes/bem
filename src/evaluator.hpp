@@ -11,7 +11,7 @@
 #include "lexer.hpp"
 #include "parser.hpp"
 
-typedef class Dindexver {
+typedef class  {
 
 
 }Dindexver;

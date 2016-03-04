@@ -24,9 +24,16 @@ void TermAST::Print() {
         Term->Print();
     } else if (ID == AppTermID) {
         for (int i = 0; i < Terms.size(); i++) {
-            std::cout << "(";
-            Terms.at(i)->Print();
-            std::cout << ")";
+            if(Terms.at(i)->getValueID() != VarID) {
+                std::cout << "(";
+                Terms.at(i)->Print();
+                std::cout << ")";
+            } else {
+                Terms.at(i)->Print();
+                if(i != Terms.size()-1) {
+                    std::cout <<" ";
+                }
+            }
         }
     } else if (ID == VarID) {
         std::cout << "{"<<Name<<", "<<DIndex<<"}" ;
@@ -41,9 +48,16 @@ void TermAST::PrintD() {
         Term->PrintD();
     } else if (ID == AppTermID) {
         for (int i = 0; i < Terms.size(); i++) {
-            std::cout << "(";
-            Terms.at(i)->PrintD();
-            std::cout << ")";
+            if(Terms.at(i)->getValueID() != VarID) {
+                std::cout << "(";
+                Terms.at(i)->PrintD();
+                std::cout << ")";
+            } else {
+                Terms.at(i)->PrintD();
+                if(i != Terms.size()-1) {
+                    std::cout <<" ";
+                }
+            }
         }
     } else if (ID == VarID) {
         std::cout <<DIndex;
@@ -102,6 +116,24 @@ void TermAST::toDeBrujin(std::map<std::string, int> &ctx, std::vector<std::strin
         std::cout << "error in toDeBrujin()\n";
     }
 }
+/*
+void TermAST::shift(int d, int c) {
+    if (ID == AppTermID) {
+        if()
+    } else if (ID == AbsTermID) {
+    } else if (ID == VarID) {
+    } else {
+        std::cout << "error in shift (IDが変)\n";
+    }
+}
 
 
+void TermAST::apply() {
+    if (ID != AppTermID) {
+        std::cout << "cannot apply these terms\n";
+        return;
+    }
 
+}
+
+*/

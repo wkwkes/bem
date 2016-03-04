@@ -98,6 +98,8 @@ class TermAST : public BaseAST{
         }
         void toDeBrujin(std::map<std::string, int> &ctx, std::vector<std::string> env);
         void PrintD();
+        void apply();
+        void shift();
 
 };
 
