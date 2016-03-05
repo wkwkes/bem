@@ -97,6 +97,12 @@ int main(int argc, char **argv) {
         parser->PrintCtx();
         parser->PrintD();
         std::cout << std::endl;
+        parser->getToplevelAST()->getTerm()->apply();
+        std::cout<<"\nPrint()\n";
+        parser->Print();
+        std::cout<<"\nPrintD()\n";
+        parser->PrintD();
+        std::cout << "\n";
     } else {
         std::cout << "error exists\n";
         parser->Print();

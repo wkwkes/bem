@@ -136,12 +136,54 @@ void TermAST::shift(int d, int c) {
     }
 }
 
-
-void TermAST::apply() {
-    if (ID != AppTermID) {
-        std::cout << "cannot apply these terms\n";
+void TermAST::subst(int var, TermAST *term) {//[t1 -> t2]this
+    if (ID == AbsTermID) {
+        term->shift(1, 0);
+        Term->subst(var + 1, term);
+        return;
+    } else if (ID == AppTermID) {
+        for (auto t : Terms) {
+            t->subst(var, term);
+        }
+        return;
+    } else if (ID == VarID) {
+        if (DIndex == var) {
+            ID = term->ID;
+            Name = term->Name;
+            DIndex = term->DIndex;
+            Term = term->Term;
+            Terms = term->Terms;
+            return;
+        } else {
+            return;
+        }
+    } else {
+        std::cout << "error in apply()\n";
         return;
     }
+}
 
+void TermAST::apply() {
+    if(Terms.size() < 2) {
+        std::cout << "error: too few terms\n";
+        return;
+    }
+    if(ID != AppTermID || Terms[0]->getValueID() != AbsTermID) {
+        std::cout << "error: cannot apply these terms\n";
+        return;
+    }
+    Terms[1]->shift(1, 0);
+    Terms[0]->Term->subst(0, Terms[1]);
+    Terms[0]->Term->shift(-1, 0);
+    Terms[0] = Terms[0]->Term;
+    Terms.erase(Terms.begin()+1);
+    if (Terms.size() == 1) {
+        ID = Terms[0]->getValueID();
+        Term = Terms[0]->Term;
+        DIndex = Terms[0]->DIndex;
+        Name = Terms[0]->Name;
+        Terms = Terms[0]->Terms;
+    }
+    return;
 }
 

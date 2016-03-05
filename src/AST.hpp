@@ -30,6 +30,9 @@ class BaseAST {
         AstID getValueID() const {
             return ID;
         }
+        void setID(AstID id) {
+            ID = id;
+        }
 };
 
 class ToplevelAST : public BaseAST{
@@ -54,6 +57,7 @@ class ToplevelAST : public BaseAST{
         }
         void toDeBrujin();
         void PrintD();
+
 };
 
 class TermAST : public BaseAST{
@@ -98,8 +102,9 @@ class TermAST : public BaseAST{
         }
         void toDeBrujin(std::map<std::string, int> &ctx, std::vector<std::string> env);
         void PrintD();
+        void subst(int var, TermAST *term);
+        void shift(int d, int c);
         void apply();
-        void shift();
 
 };
 
