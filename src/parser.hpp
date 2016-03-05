@@ -31,6 +31,9 @@ typedef class Parser {
             SAFE_DELETE(Tokens);
         }
         bool doParse();
+        void PrintDD(){
+            TA->PrintDD();
+        }
         ToplevelAST &getAST();
         void Print() {
             TA->Print();

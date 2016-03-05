@@ -3,7 +3,7 @@
 Parser::Parser(std::string filename) {
     Tokens = LexicalAnalysis(filename);
     Ctx = Tokens->getCtx();
-    //Tokens->printTokens();
+//    Tokens->printTokens();
 }
 
 bool Parser::doParse() {
@@ -87,20 +87,22 @@ TermAST *Parser::visitTerm() {
 
 int main(int argc, char **argv) {
     Parser *parser = new Parser(argv[1]);
-//    std::cout << "start parsing \n";
+    //std::cout << "start parsing \n";
     if(parser->doParse()) {
-        //std::cout << "success";
-        //std::cout << "\nCtx\n"; 
+//        std::cout << "success";
+//        std::cout << "\nCtx\n"; 
         parser->getToplevelAST()->toDeBrujin();
-        //parser->Print();
-        //std::cout<<"\n\n";
-        //parser->PrintCtx();
-        //parser->PrintD();
-        //std::cout << std::endl;
+//        parser->Print();
+//        std::cout<<"\n\n";
+//        parser->PrintCtx();
+//        parser->PrintDD();
+//        std::cout <<"^^^^^^^^^^^" <<std::endl;
         parser->getToplevelAST()->getTerm()->apply();
-        //std::cout<<"\nPrint()\n";
-        //parser->Print();
+//        std::cout<<"\nPrint()\n";
+//        std::cout <<"^^^^^^^^^^^" <<std::endl;
+//        parser->Print();
         //std::cout<<"\nPrintD()\n";
+//        parser->PrintDD();
         parser->PrintD();
         std::cout << "\n";
     } else {
