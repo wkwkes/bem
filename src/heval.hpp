@@ -8,14 +8,18 @@
 #include <vector>
 #include <utility>
 #include "APP.hpp"
-#include "AST.cpp"
+#include "AST.hpp"
+#include "parser.hpp"
 
 typedef class Eval {
     private:
         ToplevelAST *TA;
 
     public:
-        hbeta();
+        Eval(ToplevelAST *ta) : TA(ta) {}
+        ~Eval() {}
+        void hbeta();
+        bool isEvalable();
 } Eval;
 
 #endif

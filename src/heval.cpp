@@ -1,17 +1,17 @@
 #include "heval.hpp"
 
-Eval::hbeta () {
+void Eval::hbeta () {
     int count = 0;
-    while (TA->Term->isEvalable && cout <= 1000) {
-        TA->Term->apply();
-        cout++;
+    while (TA->getTerm()->isEvalable() && count <= 1000) {
+        TA->getTerm()->apply();
+        count++;
     } 
 }
 
-Eval::isEvalable() {
-    if (TA->Term->getValueID() == AppTermID) {
-        if (TA->Term->Terms[0]->getValueID() == AbsTermID &&
-                TA->Term->Terms.size() >= 2) {
+bool Eval::isEvalable() {
+    if (TA->getTerm()->getValueID() == AppTermID) {
+        if (TA->getTerm()->getTerm(0)->getValueID() == AbsTermID &&
+                TA->getTerm()->getTermssize() >= 2) {
             return true;
         }
     }

@@ -63,6 +63,7 @@ class ToplevelAST : public BaseAST{
             return Ctx;
         }
         void Gen();
+        void heval();
 };
 
 class TermAST : public BaseAST{
@@ -79,6 +80,7 @@ class TermAST : public BaseAST{
         TermAST(const std::string name, TermAST *term) 
             : BaseAST(AbsTermID), Name(name), Term(term), DIndex(-1) {}
         TermAST(const std::string name) : BaseAST(VarID), Name(name), DIndex(-1) {}
+        TermAST(const TermAST&);
         ~TermAST();
         BaseAST *getTerm() {
             if(ID == AbsTermID) {
@@ -120,6 +122,9 @@ class TermAST : public BaseAST{
         std::string pickfresh(std::map<std::string, int> &ctx, std::vector<std::string> env, std::string str);
         void Gen(std::map<std::string, int> &ctx, std::vector<std::string> env, bool top);
         bool isEvalable();
+        int getTermssize() {
+            return Terms.size();
+        }
 };
 
 #endif

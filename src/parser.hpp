@@ -35,6 +35,9 @@ typedef class Parser {
             TA->PrintDD();
         }
         ToplevelAST &getAST();
+        ToplevelAST *getTA() {
+            return TA;
+        }
         void Print() {
             TA->Print();
         }/*

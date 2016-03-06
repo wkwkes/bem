@@ -83,7 +83,7 @@ TermAST *Parser::visitTerm() {
         return new TermAST(terms);
     }
 }
-
+/*
 
 int main(int argc, char **argv) {
     Parser *parser = new Parser(argv[1]);
@@ -118,7 +118,4 @@ int main(int argc, char **argv) {
         std::cout << std::endl;
     }
 }
-
-
-
-
+*/

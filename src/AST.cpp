@@ -24,6 +24,26 @@ void ToplevelAST::Gen() {
     Term->Gen(Ctx, *new std::vector<std::string>(), true);
     std::cout << "\n\\end{document}";
 }
+
+void ToplevelAST::heval() {
+    int count = 0;
+    while (Term->isEvalable() && count <= 10) {
+        Term->apply();
+        std::cout << count << " : ";
+        Term->PrintDD();
+        std::cout << "\n";
+        count++;
+        if(Term->isEvalable())std::cout << "asdffaf\n";
+        std::cout <<"-----------------------------\n";
+        //Term->apply();
+        std::cout << count << " : ";
+        Term->PrintDD();
+        std::cout << "\n";
+        count++;
+        if(Term->isEvalable())std::cout << "asdffaf\n";
+    }   
+}
+
 /*
 void TermAST::Print() {
     if (ID == AbsTermID) {
@@ -234,6 +254,7 @@ void TermAST::shift(int d, int c) {
 }
 
 void TermAST::subst(int var, TermAST *term) {//[t1 -> t2]this
+    std::cout << "start subst\n";
     if (ID == AbsTermID) {
     //std::cout << "go shift!:(subst) ";
     //term->PrintDD();
@@ -267,6 +288,12 @@ void TermAST::subst(int var, TermAST *term) {//[t1 -> t2]this
     }
 }
 void TermAST::apply() {
+    std::cout << "apply: "<<"ID("<<ID<<"), "<<"Terms.size()("<<Terms.size()<<")\n";
+    for (int i = 0; i < Terms.size(); i++) {
+        std::cout << "Terms["<<i<<"] : ";
+        Terms[i]->PrintDD();
+        std::cout<<std::endl;
+    }
     if(Terms.size() < 2) {
         std::cout << "error: too few terms\n";
         return;
@@ -277,21 +304,42 @@ void TermAST::apply() {
     }   
  //   std::cout << "go shift : (apply1)\n";
     //PrintDD();
-    //Terms[1]->shift(1, 0); 
+    Terms[1]->shift(1, 0); 
+    Terms[1]->PrintDD();
     //std::cout << "\n";
     //std::cout << "end shift : (apply1)\n";
+    Terms[0]->Term->PrintDD();
+    std::cout <<"\n";
     Terms[0]->Term->subst(0, Terms[1]);
+    Terms[0]->Term->PrintDD();
+    std::cout <<"\n";
+
     //Terms[0]->PrintDD();
     //std::cout << 114514<<std::endl;
 //    Terms[0]->Term->PrintDD();
 //    std::cout <<810<< std::endl;
 //    std::cout << "go shift : (apply2)\n";
 //    PrintDD();
+    std::cout << "kokomade ha kiteru!!!!!!!\n";
+    std::cout << "kokomade ha kiteru!!!!!!!???????????\n";
+    Terms[0]->Term->PrintDD();
     Terms[0]->Term->shift(-1, 0); 
 //    std::cout << "\n";
 //    std::cout << "end shift : (apply2)\n";
+    std::cout << "kokomade ha kiteru!!!!!!!???????????\n";
     Terms[0] = Terms[0]->Term;
+    std::cout << "kokomade ha kiteru!!!!!!!???????????\n";
     Terms.erase(Terms.begin()+1);
+    std::cout << "kokomade ha kiteru!!!!!!!???????????\n";
+    if (Terms[0]->getValueID() == AppTermID &&
+            Terms[0]->Terms.size() == 1) {
+        std::cout << "ATARI\n";
+        Terms[0]->ID = Terms[0]->Terms[0]->getValueID();
+        Terms[0]->Term = Terms[0]->Terms[0]->Term;
+        Terms[0]->DIndex = Terms[0]->Terms[0]->DIndex;
+        Terms[0]->Name = Terms[0]->Terms[0]->Name;
+        Terms[0]->Terms = Terms[0]->Terms[0]->Terms;
+    }
     if (Terms.size() == 1) {
         ID = Terms[0]->getValueID();
         Term = Terms[0]->Term;
@@ -299,6 +347,9 @@ void TermAST::apply() {
         Name = Terms[0]->Name;
         Terms = Terms[0]->Terms;
     }
+    std::cout << "korega saigo ^^^^^^~~~~~~~~~~~~~\n";
+    Terms[0]->PrintDD();
+    std::cout << "korega saigo ^^^^^^~~~~~~~~~~~~??????~\n";
 
     return;
 }
@@ -306,6 +357,9 @@ void TermAST::apply() {
 void TermAST::Gen(std::map<std::string, int> &ctx, std::vector<std::string> env, bool top) {
     if (ID == AbsTermID) {
         env.push_back(pickfresh(ctx, env, Name));
+        if (top) {
+            std::cout << "[. ";
+        }
         std::cout << "{ $\\lambda "<<env[env.size() - 1] << ". $ ";
         if(Term->getValueID() == AppTermID) {
             if (Term->Terms[0]->getValueID() == VarID) {
@@ -316,7 +370,10 @@ void TermAST::Gen(std::map<std::string, int> &ctx, std::vector<std::string> env,
             Term->Gen(ctx, env, false);
         }
         std::cout << "}";
-        Term->Gen(ctx, env, false);
+        //Term->Gen(ctx, env, false);
+        if (top) {
+            std::cout << " ] ";
+        }
     } else if (ID == AppTermID) {
         std::cout << " [. ";
         if (top) {
@@ -349,4 +406,13 @@ void TermAST::Gen(std::map<std::string, int> &ctx, std::vector<std::string> env,
     } else {
         std::cout << "some error in TermAST::print()" << std::endl;
     }
+}
+
+bool TermAST::isEvalable() {
+    if (ID == AppTermID && Terms.size() >= 2) {
+        if (Terms[0]->getValueID() == AbsTermID && Terms.size() >= 2) {
+            return true;
+        }   
+    }   
+    return false;
 }
