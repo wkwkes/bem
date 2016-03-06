@@ -119,6 +119,7 @@ class TermAST : public BaseAST{
         void PrinttmD(std::map<std::string, int> &ctx, std::vector<std::string> env);
         std::string pickfresh(std::map<std::string, int> &ctx, std::vector<std::string> env, std::string str);
         void Gen(std::map<std::string, int> &ctx, std::vector<std::string> env, bool top);
+        bool isEvalable();
 };
 
 #endif
