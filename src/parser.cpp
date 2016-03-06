@@ -97,14 +97,19 @@ int main(int argc, char **argv) {
 //        parser->PrintCtx();
 //        parser->PrintDD();
 //        std::cout <<"^^^^^^^^^^^" <<std::endl;
+        parser->PrintDD();
+        std::cout << "\n";
         parser->getToplevelAST()->getTerm()->apply();
 //        std::cout<<"\nPrint()\n";
 //        std::cout <<"^^^^^^^^^^^" <<std::endl;
 //        parser->Print();
         //std::cout<<"\nPrintD()\n";
 //        parser->PrintDD();
+        parser->PrintDD();
+        std::cout<<"\n";
         parser->PrintD();
         std::cout<<"\n";
+
         parser->Gen();
         std::cout << "\n";
     } else {

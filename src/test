@@ -1,1 +1,1 @@
-(\y. (\x.y x z w rt )) ret
+(\x. (\y. y y) (\z. z z)) (\w. w)

@@ -1,0 +1,6 @@
+(\x'. (\c'. c)x' (\z'. (\c'. w)(\w'. (\c'. z))))
+\documentclass[dvipdfmx]{jsarticle}
+ \usepackage{tikz-qtree}
+ \begin{document}
+ \Tree [. { $\lambda x'. $}  [. { $\lambda c'. $} cc ] $x'$  [. { $\lambda z'. $}  [. { $\lambda c'. $} ww ]  [. { $\lambda w'. $}  [. { $\lambda c'. $} zz ]  ]  ]  ] 
+\end{document}

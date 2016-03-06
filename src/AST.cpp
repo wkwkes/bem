@@ -21,7 +21,7 @@ void ToplevelAST::toDeBrujin() {
 
 void ToplevelAST::Gen() {
     std::cout << "\\documentclass[dvipdfmx]{jsarticle}\n \\usepackage{tikz-qtree}\n \\begin{document}\n \\Tree";
-    Term->Gen(Ctx, *new std::vector<std::string>());
+    Term->Gen(Ctx, *new std::vector<std::string>(), true);
     std::cout << "\n\\end{document}";
 }
 /*
@@ -141,6 +141,7 @@ void TermAST::PrinttmD(std::map<std::string, int> &ctx, std::vector<std::string>
     }
 }
 void TermAST::PrintDD() {
+    std::cout << "<"<<ID<<">"; 
     if (ID == AbsTermID) {
         std::cout << "\\"<<".";
         Term->PrintDD();
@@ -297,31 +298,46 @@ void TermAST::apply() {
         DIndex = Terms[0]->DIndex;
         Name = Terms[0]->Name;
         Terms = Terms[0]->Terms;
-    }   
+    }
+
     return;
 }
 
-void TermAST::Gen(std::map<std::string, int> &ctx, std::vector<std::string> env) {
+void TermAST::Gen(std::map<std::string, int> &ctx, std::vector<std::string> env, bool top) {
     if (ID == AbsTermID) {
         env.push_back(pickfresh(ctx, env, Name));
-        std::cout << "{ $\\lambda$"<<env[env.size() - 1]<<". } ";
-        Term->Gen(ctx, env);
+        std::cout << "{ $\\lambda "<<env[env.size() - 1] << ". $ ";
+        if(Term->getValueID() == AppTermID) {
+            if (Term->Terms[0]->getValueID() == VarID) {
+                Term->Terms[0]->Gen(ctx, env, false);
+                Term->Terms.erase(Term->Terms.begin());
+            }
+        } else if (Term->getValueID() == VarID) {
+            Term->Gen(ctx, env, false);
+        }
+        std::cout << "}";
+        Term->Gen(ctx, env, false);
     } else if (ID == AppTermID) {
+        std::cout << " [. ";
+        if (top) {
+            std::cout << " { } ";
+        }
         for (int i = 0; i < Terms.size(); i++) {
             if(Terms.at(i)->getValueID() != VarID) {
                 std::cout << " [. ";
-                Terms.at(i)->Gen(ctx, env);
+                Terms.at(i)->Gen(ctx, env, false);
                 std::cout << " ] ";
             } else {
-                Terms.at(i)->Gen(ctx, env);
+                Terms.at(i)->Gen(ctx, env, false);
                 if(i != Terms.size()-1) {
                     std::cout <<" ";
                 }
             }
         }
+        std::cout << " ] ";
     } else if (ID == VarID) {
         if (DIndex < env.size()) {
-            std::cout <<env[env.size()-1-DIndex];
+            std::cout <<"$" << env[env.size()-1-DIndex] <<"$";
         } else {
             int index = DIndex - env.size();
             for (auto itr : ctx) {
