@@ -19,6 +19,11 @@ void ToplevelAST::toDeBrujin() {
     Term->toDeBrujin(Ctx, *new std::vector<std::string>());
 }
 
+void ToplevelAST::Gen() {
+    std::cout << "\\documentclass[dvipdfmx]{jsarticle}\n \\usepackage{tikz-qtree}\n \\begin{document}\n \\Tree";
+    Term->Gen(Ctx, *new std::vector<std::string>());
+    std::cout << "\n\\end{document}";
+}
 /*
 void TermAST::Print() {
     if (ID == AbsTermID) {
@@ -295,37 +300,37 @@ void TermAST::apply() {
     }   
     return;
 }
-/*
-void TermAST::apply() {
-    if(Terms.size() < 2) {
-        std::cout << "error: too few terms\n";
-        return;
-    }
-    if(ID != AppTermID || Terms[0]->getValueID() != AbsTermID) {
-        std::cout << "error: cannot apply these terms\n";
-        return;
-    }
-    //std::cout <<"bef "<<Terms[0]->getValueID()<<"\n";
-    Terms[1]->shift(1, 0);
-    //std::cout <<"bef "<<Terms[0]->getValueID()<<"\n";
-    Terms[0]->Term->subst(0, Terms[1]);
-    //std::cout <<Terms[0]->getValueID()<<"koko\n";
-    Terms[0]->Term->shift(-1, 0);
-    Terms[0]->Term->PrintDD();
-    Terms[0]->ID = Terms[0]->getValueID();
-    Terms[0]->Term = Terms[0]->Term->Term;
-    Terms[0]->DIndex = Terms[0]->Term->DIndex;
-    Terms[0]->Name = Terms[0]->Term->Name;
-    Terms[0]->Terms = Terms[0]->Term->Terms;
-    Terms.erase(Terms.begin()+1);
-    if (Terms.size() == 1) {
-        ID = Terms[0]->getValueID();
-        Term = Terms[0]->Term;
-        DIndex = Terms[0]->DIndex;
-        Name = Terms[0]->Name;
-        Terms = Terms[0]->Terms;
-    }
-    return;
-}
-*/
 
+void TermAST::Gen(std::map<std::string, int> &ctx, std::vector<std::string> env) {
+    if (ID == AbsTermID) {
+        env.push_back(pickfresh(ctx, env, Name));
+        std::cout << "{ $\\lambda$"<<env[env.size() - 1]<<". } ";
+        Term->Gen(ctx, env);
+    } else if (ID == AppTermID) {
+        for (int i = 0; i < Terms.size(); i++) {
+            if(Terms.at(i)->getValueID() != VarID) {
+                std::cout << " [. ";
+                Terms.at(i)->Gen(ctx, env);
+                std::cout << " ] ";
+            } else {
+                Terms.at(i)->Gen(ctx, env);
+                if(i != Terms.size()-1) {
+                    std::cout <<" ";
+                }
+            }
+        }
+    } else if (ID == VarID) {
+        if (DIndex < env.size()) {
+            std::cout <<env[env.size()-1-DIndex];
+        } else {
+            int index = DIndex - env.size();
+            for (auto itr : ctx) {
+                if (itr.second == index) {
+                    std::cout <<itr.first;
+                }
+            }
+        }
+    } else {
+        std::cout << "some error in TermAST::print()" << std::endl;
+    }
+}

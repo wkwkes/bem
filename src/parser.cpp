@@ -104,6 +104,8 @@ int main(int argc, char **argv) {
         //std::cout<<"\nPrintD()\n";
 //        parser->PrintDD();
         parser->PrintD();
+        std::cout<<"\n";
+        parser->Gen();
         std::cout << "\n";
     } else {
         std::cout << "error exists\n";

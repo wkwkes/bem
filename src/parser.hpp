@@ -56,6 +56,9 @@ typedef class Parser {
         void toDeBrujin() {
             TA->toDeBrujin();
         }
+        void Gen() {
+            TA->Gen();
+        }
 } Parser;
 
 #endif

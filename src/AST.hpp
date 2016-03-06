@@ -62,7 +62,7 @@ class ToplevelAST : public BaseAST{
         std::map<std::string, int> getCtx() {
             return Ctx;
         }
-
+        void Gen();
 };
 
 class TermAST : public BaseAST{
@@ -118,6 +118,7 @@ class TermAST : public BaseAST{
         void Printtm(std::map<std::string, int> &ctx, std::vector<std::string> env);
         void PrinttmD(std::map<std::string, int> &ctx, std::vector<std::string> env);
         std::string pickfresh(std::map<std::string, int> &ctx, std::vector<std::string> env, std::string str);
+        void Gen(std::map<std::string, int> &ctx, std::vector<std::string> env);
 };
 
 #endif
