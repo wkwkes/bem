@@ -27,20 +27,13 @@ void ToplevelAST::Gen() {
 
 void ToplevelAST::heval() {
     int count = 0;
-    while (Term->isEvalable() && count <= 10) {
+    while (Term->isEvalable() && count <= 1000) {
+        //Term->getTerm(0)->hbeta();
         Term->apply();
         std::cout << count << " : ";
         Term->PrintDD();
         std::cout << "\n";
-        count++;/*
-        if(Term->isEvalable())std::cout << "asdffaf\n";
-        std::cout <<"-----------------------------\n";
-        //Term->apply();
-        std::cout << count << " : ";
-        Term->PrintDD();
-        std::cout << "\n";
         count++;
-        if(Term->isEvalable())std::cout << "asdffaf\n";*/
     }   
 }
 
@@ -69,6 +62,20 @@ void TermAST::Print() {
     }
 }
 */
+/*
+void TermAST::hbeta() {
+    if(ID == AbsTermID) {
+        Term->PrintDD();
+        Term->hbeta();
+    } else if (ID == AppTermID) {
+        if (Terms.size() == 1 && Terms[0]->getValueID() == AbsTermID) {
+            Terms[0]->getTerm()->hbeta();
+            return;
+        }
+        std::cout <<"a p p l y し　た\n";
+        apply();
+    }
+}*/
 
 TermAST::TermAST(const TermAST& term) : BaseAST(term.ID), Name(term.Name), DIndex(term.DIndex), Ctx(term.Ctx) {
     for (auto itr : term.Terms) {
@@ -246,20 +253,8 @@ void TermAST::toDeBrujin(std::map<std::string, int> &ctx, std::vector<std::strin
 
 
 void TermAST::shift(int d, int c) {
-    //std::cout << " from(" << ID<<") ";
-    //PrintDD();   
-    //std::cout << " to ";
     if (ID == AppTermID) {
         if(Terms.size() < 2) {
-            //std::cout << "error in shift :too few terms\n";
-            //std::cout << ID <<std::endl;
-            //Terms[0]->PrintDD();
-            //PrintDD();
-            /*
-            for(auto itr : Terms) {
-                itr->Print();
-                std::cout << std::endl;
-            }*/
             return;
         }
         Terms[0]->shift(d, c);
@@ -273,21 +268,11 @@ void TermAST::shift(int d, int c) {
     } else {
         std::cout << "error in shift (IDが変)\n";
     }
-    //PrintDD();
-    //std::cout << "\n";
 }
 
 void TermAST::subst(int var, TermAST *term) {//[t1 -> t2]this
-    std::cout << "start subst\n";
     if (ID == AbsTermID) {
-    //std::cout << "go shift!:(subst) ";
-    //term->PrintDD();
-    //std::cout << "(ID:"<<ID<<")";
-    //std::cout << "\n";
         term->shift(1, 0);
-    //std::cout << "\n";
-
-    //std::cout << "end shift!\n";
         Term->subst(var + 1, term);
         return;
     } else if (ID == AppTermID) {
@@ -334,54 +319,52 @@ void TermAST::apply() {
         std::cout << "error: cannot apply these terms\n";
         return;
     }   
- //   std::cout << "go shift : (apply1)\n";
-    //PrintDD();
     Terms[1]->shift(1, 0); 
     Terms[1]->PrintDD();
-    //std::cout << "\n";
-    //std::cout << "end shift : (apply1)\n";
-    Terms[0]->Term->PrintDD();
-    std::cout <<"\n";
+    std::cout << "\n";
     Terms[0]->Term->subst(0, Terms[1]);
     std::cout << "end subst\n";
     std::cout << "Terms[0]\n";
     Terms[0]->Term->PrintDD();
+    std::cout << "\n";
     if(Terms.size()>=2) {
         std::cout << Terms.size()<<"Terms[1]\n";
         Terms[1]->PrintDD();
     }
     std::cout <<"\n";
-
-    //Terms[0]->PrintDD();
-    //std::cout << 114514<<std::endl;
-//    Terms[0]->Term->PrintDD();
-//    std::cout <<810<< std::endl;
-//    std::cout << "go shift : (apply2)\n";
-//    PrintDD();
-    std::cout << "kokomade ha kiteru!!!!!!!\n";
-    std::cout << "kokomade ha kiteru!!!!!!!???????????\n";
-    Terms[0]->Term->PrintDD();
     Terms[0]->Term->shift(-1, 0); 
-//    std::cout << "\n";
-//    std::cout << "end shift : (apply2)\n";
-    std::cout << "kokomade ha kiteru!!!!!!!???????????\n";
-    Terms[0] = Terms[0]->Term;
-//    SAFE_DELETE(Terms[0]);
-    //Terms[0] = new TermAST(*(Terms[0]->Term)); 
-    std::cout << "kokomade ha kiteru!!!!!!!???????????\n";
+    std::cout << "\nnull\n"<<Terms.size();
+    std::cout << "asffafadfaffaafffaafsd\n\n";
+    std::cout << "\nnull\n"<<Terms.size();
+    if (Terms[0]->Term != NULL) { 
+    std::cout << "\nnull\n"<<Terms.size();
+        TermAST *ptr = new TermAST(*(Terms[0]->Term));
+    std::cout << "\nnull\n";
+        SAFE_DELETE(Terms[0]);
+    std::cout << "\nnull\n";
+        Terms[0] = ptr;
+    } else {
+    std::cout << "\nnull\n";
+    }
+    std::cout << "asffafadfaffaafffaafsd\n\n";
     Terms.erase(Terms.begin()+1);
-    std::cout << "kokomade ha kiteru!!!!!!!???????????\n";
+    std::cout << "asffafadfaffaafffaafsd\n\n";
     if (Terms[0]->getValueID() == AppTermID &&
             Terms[0]->Terms.size() == 1) {
         std::cout << "yatteruzpoi ! ! ! !\n";
         Terms[0]->ID = Terms[0]->Terms[0]->getValueID();
         Terms[0]->DIndex = Terms[0]->Terms[0]->DIndex;
         Terms[0]->Name = Terms[0]->Terms[0]->Name;
-        std::cout << "''''''''''''''''''''''''''''\n";
+        std::cout << "pohrr";
         if (Terms[0]->Terms[0]->Term != NULL) {
-            Terms[0]->Term = new TermAST(*(Terms[0]->Terms[0]->Term));
             std::cout << "''''''''''''''''''''''''''''\n";
+            std::cout << Terms[0]->Terms[0]->Term->getValueID() << "\n";
+            std::cout << Terms[0]->Terms[0]->Term->getVar() << "\n";
+            std::cout << Terms[0]->Terms[0]->Term->getDIndex() << "\n";
+            SAFE_DELETE(Terms[0]->Term);
+            Terms[0]->Term = new TermAST(*(Terms[0]->Terms[0]->Term));
         } else {
+            std::cout <<"oraoraoraora\n";
             Terms[0]->Term = NULL;
         }
         Terms[0]->Terms.clear();
@@ -390,18 +373,13 @@ void TermAST::apply() {
             Terms[0]->Terms.push_back(new TermAST(*itr));
         }
     }
-    std::cout << "Terms[0]\n";
-    Terms[0]->PrintDD();
-    if(Terms.size()>=2) {
-        std::cout << "Terms[1]\n";
-        Terms[1]->PrintDD();
-    }
     std::cout <<"\n";
+        std::cout << "pohrr";
     if (Terms.size() == 1 && ID == AppTermID) {
-        std::cout << Terms.size()  <<"yatteruzpoi ! ! ! !\n";
         ID = Terms[0]->getValueID();
         DIndex = Terms[0]->DIndex;
         Name = Terms[0]->Name;
+        std::cout << "pohrr";
         if (Terms[0]->Term != NULL) {
             Term = new TermAST(*(Terms[0]->Term));
         } else {
@@ -412,10 +390,7 @@ void TermAST::apply() {
             Terms.push_back(new TermAST(*itr));
         }
     }
-    std::cout << "korega saigo ^^^^^^~~~~~~~~~~~~~\n";
-    Terms[0]->PrintDD();
-    std::cout << "korega saigo ^^^^^^~~~~~~~~~~~~??????~\n";
-
+        std::cout << "pohrr";
     return;
 }
 
@@ -445,19 +420,15 @@ void TermAST::Gen(std::map<std::string, int> &ctx, std::vector<std::string> env,
             std::cout << " { } ";
         }
         for (int i = 0; i < Terms.size(); i++) {
-        //    if(Terms.at(i)->getValueID() != VarID) {
-                std::cout << " [. ";
-                if (i == 0 && Terms.size() >= 2 && Terms[0]->ID == AppTermID) {
-                    std::cout << "APP";
-                }
-                Terms.at(i)->Gen(ctx, env, false);
-                std::cout << " ] ";
-          //  } else {
-          //      Terms.at(i)->Gen(ctx, env, false);
-                if(i != Terms.size()-1) {
-                    std::cout <<" ";
-                }
-          //  }
+            std::cout << " [. ";
+            if (i == 0 && Terms.size() >= 2 && Terms[0]->ID == AppTermID) {
+                std::cout << "APP";
+            }
+            Terms.at(i)->Gen(ctx, env, false);
+            std::cout << " ] ";
+            if(i != Terms.size()-1) {
+                std::cout <<" ";
+            }
         }
         if (top) {
             std::cout << " ] ";

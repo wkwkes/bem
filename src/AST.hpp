@@ -76,14 +76,19 @@ class TermAST : public BaseAST {
 
     public:
         TermAST(std::vector<TermAST*> terms) 
-            : BaseAST(AppTermID), Terms(terms), DIndex(-1) {}
+            : BaseAST(AppTermID), Term(NULL), DIndex(-1) {
+                Terms.clear();
+                for (auto itr: terms) {
+                    Terms.push_back(new TermAST(*itr));
+                }
+            }
         TermAST(const std::string name, TermAST *term) 
-            : BaseAST(AbsTermID), Name(name), Term(term), DIndex(-1) {}
-        TermAST(const std::string name) : BaseAST(VarID), Name(name), DIndex(-1) {}
+            : BaseAST(AbsTermID), Name(name), Term(new TermAST(*term)), DIndex(-1) {}
+        TermAST(const std::string name) : BaseAST(VarID), Name(name), DIndex(-1), Term(NULL) {}
         TermAST(const TermAST&);
         TermAST& operator=(const TermAST&);
         ~TermAST();
-        BaseAST *getTerm() {
+        TermAST *getTerm() {
             if(ID == AbsTermID) {
                 return Term;
             } else {
@@ -91,7 +96,7 @@ class TermAST : public BaseAST {
                 return NULL;
             }
         }
-        BaseAST *getTerm(int i) {
+        TermAST *getTerm(int i) {
             if(i>=Terms.size() || ID != AppTermID) {
                 std::cout << "error in Term's Type\n";
                 return NULL;
@@ -126,6 +131,7 @@ class TermAST : public BaseAST {
         int getTermssize() {
             return Terms.size();
         }
+        void hbeta();
 };
 
 #endif
