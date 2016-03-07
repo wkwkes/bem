@@ -11,12 +11,12 @@ int main(int argc, char **argv) {
         parser->getToplevelAST()->toDeBrujin();
         parser->PrintDD();
         std::cout<< "\n";
-        parser->getToplevelAST()->getTerm()->apply();
+       // parser->getToplevelAST()->getTerm()->apply();
         std::cout << "^^^^\n";
         parser->getToplevelAST()->getTerm()->PrintDD();
         std::cout << "\n^^^^\n";
-        parser->getToplevelAST()->getTerm()->apply();
-       // parser->getToplevelAST()->heval();
+        //parser->getToplevelAST()->getTerm()->apply();
+        parser->getToplevelAST()->heval();
         parser->PrintDD();
         std::cout << "\n";
         parser->Gen();

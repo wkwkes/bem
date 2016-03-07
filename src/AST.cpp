@@ -20,7 +20,7 @@ void ToplevelAST::toDeBrujin() {
 }
 
 void ToplevelAST::Gen() {
-    std::cout << "\\documentclass[dvipdfmx]{jsarticle}\n \\usepackage{tikz-qtree}\n \\begin{document}\n \\Tree";
+    std::cout << "\\documentclass[dvipdfmx]{jsarticle}\n \\usepackage{tikz-qtree}\n \\begin{document}\n \\Tree ";
     Term->Gen(Ctx, *new std::vector<std::string>(), true);
     std::cout << "\n\\end{document}";
 }
@@ -32,7 +32,7 @@ void ToplevelAST::heval() {
         std::cout << count << " : ";
         Term->PrintDD();
         std::cout << "\n";
-        count++;
+        count++;/*
         if(Term->isEvalable())std::cout << "asdffaf\n";
         std::cout <<"-----------------------------\n";
         //Term->apply();
@@ -40,7 +40,7 @@ void ToplevelAST::heval() {
         Term->PrintDD();
         std::cout << "\n";
         count++;
-        if(Term->isEvalable())std::cout << "asdffaf\n";
+        if(Term->isEvalable())std::cout << "asdffaf\n";*/
     }   
 }
 
@@ -301,7 +301,11 @@ void TermAST::subst(int var, TermAST *term) {//[t1 -> t2]this
             Name = term->Name;
             DIndex = term->DIndex;
             SAFE_DELETE(Term);
-            Term = new TermAST(*(term->Term));
+            if(term->Term != NULL) {
+                Term = new TermAST(*(term->Term));
+            } else {
+                Term = NULL;
+            }
             Terms.clear();
             for (auto itr : term->Terms) {
                 Terms.push_back(new TermAST(*itr));
@@ -343,8 +347,8 @@ void TermAST::apply() {
     std::cout << "Terms[0]\n";
     Terms[0]->Term->PrintDD();
     if(Terms.size()>=2) {
-        std::cout << "Terms[1]\n";
-        Terms[1]->Term->PrintDD();
+        std::cout << Terms.size()<<"Terms[1]\n";
+        Terms[1]->PrintDD();
     }
     std::cout <<"\n";
 
@@ -387,23 +391,27 @@ void TermAST::apply() {
         }
     }
     std::cout << "Terms[0]\n";
-    Terms[0]->Term->PrintDD();
+    Terms[0]->PrintDD();
     if(Terms.size()>=2) {
         std::cout << "Terms[1]\n";
-        Terms[1]->Term->PrintDD();
+        Terms[1]->PrintDD();
     }
-    std::cout <<"\n";/*
-    if (Terms.size() == 1) {
-        std::cout << "yatteruzpoi ! ! ! !\n";
+    std::cout <<"\n";
+    if (Terms.size() == 1 && ID == AppTermID) {
+        std::cout << Terms.size()  <<"yatteruzpoi ! ! ! !\n";
         ID = Terms[0]->getValueID();
         DIndex = Terms[0]->DIndex;
         Name = Terms[0]->Name;
-        Term = new TermAST(*(Terms[0]->Term));
+        if (Terms[0]->Term != NULL) {
+            Term = new TermAST(*(Terms[0]->Term));
+        } else {
+            Term = NULL;
+        }
         Terms.clear();
         for (auto itr : Terms[0]->Terms) {
             Terms.push_back(new TermAST(*itr));
         }
-    }*/
+    }
     std::cout << "korega saigo ^^^^^^~~~~~~~~~~~~~\n";
     Terms[0]->PrintDD();
     std::cout << "korega saigo ^^^^^^~~~~~~~~~~~~??????~\n";
@@ -427,29 +435,37 @@ void TermAST::Gen(std::map<std::string, int> &ctx, std::vector<std::string> env,
             Term->Gen(ctx, env, false);
         }
         std::cout << "}";
-        //Term->Gen(ctx, env, false);
+        Term->Gen(ctx, env, false);
         if (top) {
             std::cout << " ] ";
         }
     } else if (ID == AppTermID) {
-        std::cout << " [. ";
         if (top) {
+            std::cout << " [. ";
             std::cout << " { } ";
         }
         for (int i = 0; i < Terms.size(); i++) {
-            if(Terms.at(i)->getValueID() != VarID) {
+        //    if(Terms.at(i)->getValueID() != VarID) {
                 std::cout << " [. ";
+                if (i == 0 && Terms.size() >= 2 && Terms[0]->ID == AppTermID) {
+                    std::cout << "APP";
+                }
                 Terms.at(i)->Gen(ctx, env, false);
                 std::cout << " ] ";
-            } else {
-                Terms.at(i)->Gen(ctx, env, false);
+          //  } else {
+          //      Terms.at(i)->Gen(ctx, env, false);
                 if(i != Terms.size()-1) {
                     std::cout <<" ";
                 }
-            }
+          //  }
         }
-        std::cout << " ] ";
+        if (top) {
+            std::cout << " ] ";
+        }
     } else if (ID == VarID) {
+        if (top) {
+            std::cout << " [. ";
+        }
         if (DIndex < env.size()) {
             std::cout <<"$" << env[env.size()-1-DIndex] <<"$";
         } else {
@@ -457,8 +473,12 @@ void TermAST::Gen(std::map<std::string, int> &ctx, std::vector<std::string> env,
             for (auto itr : ctx) {
                 if (itr.second == index) {
                     std::cout <<itr.first;
+                    break;
                 }
             }
+        }
+        if (top) {
+            std::cout << " ] ";
         }
     } else {
         std::cout << "some error in TermAST::print()" << std::endl;
