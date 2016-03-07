@@ -13,10 +13,10 @@ int main(int argc, char **argv) {
         std::cout<< "\n";
         parser->getToplevelAST()->getTerm()->apply();
         std::cout << "^^^^\n";
-       // parser->getToplevelAST()->getTerm()->PrintDD();
+        parser->getToplevelAST()->getTerm()->PrintDD();
         std::cout << "\n^^^^\n";
-       // parser->getToplevelAST()->getTerm()->apply();
-        parser->getToplevelAST()->heval();
+        parser->getToplevelAST()->getTerm()->apply();
+       // parser->getToplevelAST()->heval();
         parser->PrintDD();
         std::cout << "\n";
         parser->Gen();

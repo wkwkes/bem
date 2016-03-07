@@ -66,7 +66,7 @@ class ToplevelAST : public BaseAST{
         void heval();
 };
 
-class TermAST : public BaseAST{
+class TermAST : public BaseAST {
     private:
         std::map<std::string, int> Ctx;
         std::vector<TermAST*> Terms;

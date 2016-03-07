@@ -339,7 +339,13 @@ void TermAST::apply() {
     Terms[0]->Term->PrintDD();
     std::cout <<"\n";
     Terms[0]->Term->subst(0, Terms[1]);
+    std::cout << "end subst\n";
+    std::cout << "Terms[0]\n";
     Terms[0]->Term->PrintDD();
+    if(Terms.size()>=2) {
+        std::cout << "Terms[1]\n";
+        Terms[1]->Term->PrintDD();
+    }
     std::cout <<"\n";
 
     //Terms[0]->PrintDD();
@@ -356,25 +362,48 @@ void TermAST::apply() {
 //    std::cout << "end shift : (apply2)\n";
     std::cout << "kokomade ha kiteru!!!!!!!???????????\n";
     Terms[0] = Terms[0]->Term;
+//    SAFE_DELETE(Terms[0]);
+    //Terms[0] = new TermAST(*(Terms[0]->Term)); 
     std::cout << "kokomade ha kiteru!!!!!!!???????????\n";
     Terms.erase(Terms.begin()+1);
     std::cout << "kokomade ha kiteru!!!!!!!???????????\n";
     if (Terms[0]->getValueID() == AppTermID &&
             Terms[0]->Terms.size() == 1) {
-        std::cout << "ATARI\n";
+        std::cout << "yatteruzpoi ! ! ! !\n";
         Terms[0]->ID = Terms[0]->Terms[0]->getValueID();
-        Terms[0]->Term = Terms[0]->Terms[0]->Term;
         Terms[0]->DIndex = Terms[0]->Terms[0]->DIndex;
         Terms[0]->Name = Terms[0]->Terms[0]->Name;
-        Terms[0]->Terms = Terms[0]->Terms[0]->Terms;
+        std::cout << "''''''''''''''''''''''''''''\n";
+        if (Terms[0]->Terms[0]->Term != NULL) {
+            Terms[0]->Term = new TermAST(*(Terms[0]->Terms[0]->Term));
+            std::cout << "''''''''''''''''''''''''''''\n";
+        } else {
+            Terms[0]->Term = NULL;
+        }
+        Terms[0]->Terms.clear();
+        std::cout << "''''''''''''''''''''''''''''\n";
+        for (auto itr : Terms[0]->Terms[0]->Terms) {
+            Terms[0]->Terms.push_back(new TermAST(*itr));
+        }
     }
+    std::cout << "Terms[0]\n";
+    Terms[0]->Term->PrintDD();
+    if(Terms.size()>=2) {
+        std::cout << "Terms[1]\n";
+        Terms[1]->Term->PrintDD();
+    }
+    std::cout <<"\n";/*
     if (Terms.size() == 1) {
+        std::cout << "yatteruzpoi ! ! ! !\n";
         ID = Terms[0]->getValueID();
-        Term = Terms[0]->Term;
         DIndex = Terms[0]->DIndex;
         Name = Terms[0]->Name;
-        Terms = Terms[0]->Terms;
-    }
+        Term = new TermAST(*(Terms[0]->Term));
+        Terms.clear();
+        for (auto itr : Terms[0]->Terms) {
+            Terms.push_back(new TermAST(*itr));
+        }
+    }*/
     std::cout << "korega saigo ^^^^^^~~~~~~~~~~~~~\n";
     Terms[0]->PrintDD();
     std::cout << "korega saigo ^^^^^^~~~~~~~~~~~~??????~\n";
