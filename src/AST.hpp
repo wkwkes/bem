@@ -75,12 +75,13 @@ class TermAST : public BaseAST{
         int DIndex;
 
     public:
-        TermAST(std::vector<TermAST*> &terms) 
+        TermAST(std::vector<TermAST*> terms) 
             : BaseAST(AppTermID), Terms(terms), DIndex(-1) {}
         TermAST(const std::string name, TermAST *term) 
             : BaseAST(AbsTermID), Name(name), Term(term), DIndex(-1) {}
         TermAST(const std::string name) : BaseAST(VarID), Name(name), DIndex(-1) {}
         TermAST(const TermAST&);
+        TermAST& operator=(const TermAST&);
         ~TermAST();
         BaseAST *getTerm() {
             if(ID == AbsTermID) {

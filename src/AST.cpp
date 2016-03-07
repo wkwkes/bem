@@ -69,6 +69,30 @@ void TermAST::Print() {
     }
 }
 */
+
+TermAST::TermAST(const TermAST& term) : BaseAST(term.ID), Name(term.Name), DIndex(term.DIndex), Ctx(term.Ctx) {
+    for (auto itr : term.Terms) {
+        Terms.push_back(new TermAST(*itr));
+    }
+    if (term.Term != NULL) {
+        Term = new TermAST(*(term.Term));
+    }
+}
+
+TermAST& TermAST::operator=(const TermAST& term) {
+    BaseAST(term.ID);
+    Name = term.Name;
+    DIndex = term.DIndex;
+    Ctx = term.Ctx;
+    Terms.clear();
+    for (auto itr : term.Terms) {
+        Terms.push_back(new TermAST(*itr));
+    }
+    delete Term;
+    Term = new TermAST(*(term.Term));
+    return *this;
+}
+
 std::string TermAST::pickfresh(std::map<std::string, int> &ctx, std::vector<std::string> env, std::string str) {
     bool ch = false;
     while (!ch) {
@@ -276,8 +300,12 @@ void TermAST::subst(int var, TermAST *term) {//[t1 -> t2]this
             ID = term->ID;
             Name = term->Name;
             DIndex = term->DIndex;
-            Term = term->Term;
-            Terms = term->Terms;
+            SAFE_DELETE(Term);
+            Term = new TermAST(*(term->Term));
+            Terms.clear();
+            for (auto itr : term->Terms) {
+                Terms.push_back(new TermAST(*itr));
+            }
             return;
         } else {
             return;
