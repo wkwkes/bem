@@ -15,12 +15,19 @@ void ToplevelAST::PrintDD() {
     Term->PrintDD();
 }
 
+void ToplevelAST::PrintL() {
+    Term->PrintL();
+}
+
 void ToplevelAST::toDeBrujin() {
     Term->toDeBrujin(Ctx, *new std::vector<std::string>());
 }
 
 void ToplevelAST::Gen() {
-    std::cout << "\\documentclass[dvipdfmx]{jsarticle}\n \\usepackage{tikz-qtree}\n \\begin{document}\n \\Tree ";
+    std::cout << "\\documentclass[dvipdfmx]{jsarticle}\n \\usepackage{tikz-qtree}\n \\begin{document}\n";
+    Term->PrintL();
+    std::cout << "\n";
+    std::cout << "\n\\Tree ";
     Term->Gen(Ctx, *new std::vector<std::string>(), true);
     std::cout << "\n\\end{document}";
 }
@@ -83,6 +90,8 @@ TermAST::TermAST(const TermAST& term) : BaseAST(term.ID), Name(term.Name), DInde
     }
     if (term.Term != NULL) {
         Term = new TermAST(*(term.Term));
+    } else {
+        Term = NULL;
     }
 }
 
@@ -91,11 +100,14 @@ TermAST& TermAST::operator=(const TermAST& term) {
     Name = term.Name;
     DIndex = term.DIndex;
     Ctx = term.Ctx;
+    for (auto itr : Terms) {
+        SAFE_DELETE(itr);
+    }
     Terms.clear();
     for (auto itr : term.Terms) {
         Terms.push_back(new TermAST(*itr));
     }
-    delete Term;
+    SAFE_DELETE(Term);
     Term = new TermAST(*(term.Term));
     return *this;
 }
@@ -192,9 +204,9 @@ void TermAST::PrinttmD(std::map<std::string, int> &ctx, std::vector<std::string>
     }
 }
 void TermAST::PrintDD() {
-    std::cout << "<"<<ID<<">"; 
+    //std::cout << "<"<<ID<<">"; 
     if (ID == AbsTermID) {
-        std::cout << "\\"<<".";
+        std::cout << "\\"<<Name<<".";
         Term->PrintDD();
     } else if (ID == AppTermID) {
         for (int i = 0; i < Terms.size(); i++) {
@@ -215,6 +227,32 @@ void TermAST::PrintDD() {
         std::cout << "some error in TermAST::print()" << std::endl;
     }
 }
+
+
+void TermAST::PrintL() {
+    if (ID == AbsTermID) {
+        std::cout << "$\\lambda$"<<Name<<".";
+        Term->PrintL();
+    } else if (ID == AppTermID) {
+        for (int i = 0; i < Terms.size(); i++) {
+            if(Terms.at(i)->getValueID() != VarID) {
+                std::cout << "(";
+                Terms.at(i)->PrintL();
+                std::cout << ")";
+            } else {
+                Terms.at(i)->PrintL();
+                if(i != Terms.size()-1) {
+                    std::cout <<" ";
+                }
+            }
+        }
+    } else if (ID == VarID) {
+        std::cout <<Name;
+    } else {
+        std::cout << "some error in TermAST::print()" << std::endl;
+    }
+}
+
 TermAST::~TermAST() {
     if (ID == AppTermID) {
         for (int i = 0; i < Terms.size(); i++) {
@@ -254,11 +292,14 @@ void TermAST::toDeBrujin(std::map<std::string, int> &ctx, std::vector<std::strin
 
 void TermAST::shift(int d, int c) {
     if (ID == AppTermID) {
-        if(Terms.size() < 2) {
+        /*if(Terms.size() < 2) {
             return;
         }
         Terms[0]->shift(d, c);
-        Terms[1]->shift(d, c);
+        Terms[1]->shift(d, c);*/
+        for (auto itr : Terms) {
+            itr->shift(d, c);
+        }
     } else if (ID == AbsTermID) {
         Term->shift(d, c+1);
     } else if (ID == VarID) {
@@ -270,9 +311,9 @@ void TermAST::shift(int d, int c) {
     }
 }
 
-void TermAST::subst(int var, TermAST *term) {//[t1 -> t2]this
+void TermAST::subst(int var, TermAST term) {//[t1 -> t2]this
     if (ID == AbsTermID) {
-        term->shift(1, 0);
+        term.shift(1, 0);
         Term->subst(var + 1, term);
         return;
     } else if (ID == AppTermID) {
@@ -282,17 +323,17 @@ void TermAST::subst(int var, TermAST *term) {//[t1 -> t2]this
         return;
     } else if (ID == VarID) {
         if (DIndex == var) {
-            ID = term->ID;
-            Name = term->Name;
-            DIndex = term->DIndex;
+            ID = term.ID;
+            Name = term.Name;
+            DIndex = term.DIndex;
             SAFE_DELETE(Term);
-            if(term->Term != NULL) {
-                Term = new TermAST(*(term->Term));
+            if(term.Term != NULL) {
+                Term = new TermAST(*(term.Term));
             } else {
                 Term = NULL;
             }
             Terms.clear();
-            for (auto itr : term->Terms) {
+            for (auto itr : term.Terms) {
                 Terms.push_back(new TermAST(*itr));
             }
             return;
@@ -305,12 +346,12 @@ void TermAST::subst(int var, TermAST *term) {//[t1 -> t2]this
     }
 }
 void TermAST::apply() {
-    std::cout << "apply: "<<"ID("<<ID<<"), "<<"Terms.size()("<<Terms.size()<<")\n";
-    for (int i = 0; i < Terms.size(); i++) {
-        std::cout << "Terms["<<i<<"] : ";
-        Terms[i]->PrintDD();
-        std::cout<<std::endl;
-    }
+    //std::cout << "apply: "<<"ID("<<ID<<"), "<<"Terms.size()("<<Terms.size()<<")\n";
+    //for (int i = 0; i < Terms.size(); i++) {
+//        std::cout << "Terms["<<i<<"] : ";
+  //      Terms[i]->PrintDD();
+    //    std::cout<<std::endl;
+   // }
     if(Terms.size() < 2) {
         std::cout << "error: too few terms\n";
         return;
@@ -320,77 +361,97 @@ void TermAST::apply() {
         return;
     }   
     Terms[1]->shift(1, 0); 
-    Terms[1]->PrintDD();
-    std::cout << "\n";
-    Terms[0]->Term->subst(0, Terms[1]);
-    std::cout << "end subst\n";
-    std::cout << "Terms[0]\n";
-    Terms[0]->Term->PrintDD();
-    std::cout << "\n";
-    if(Terms.size()>=2) {
-        std::cout << Terms.size()<<"Terms[1]\n";
-        Terms[1]->PrintDD();
-    }
-    std::cout <<"\n";
+    //Terms[1]->PrintDD();
+    //std::cout << "\n";
+    Terms[0]->Term->subst(0, *Terms[1]);
+    //std::cout << "end subst\n";
+    //std::cout << "Terms[0] : ";
+    //Terms[0]->Term->PrintDD();
+    //std::cout <<"\n"<<Terms[0]->Term->getValueID() <<"\n";
+    //if(Terms.size()>=2) {
+//        std::cout << Terms.size()<<"\nTerms[1] : ";
+  //      Terms[1]->PrintDD();
+   // }
+    //std::cout <<"\n";
     Terms[0]->Term->shift(-1, 0); 
-    std::cout << "\nnull\n"<<Terms.size();
-    std::cout << "asffafadfaffaafffaafsd\n\n";
-    std::cout << "\nnull\n"<<Terms.size();
+ //   std::cout << "\none\n"<<Terms.size();
     if (Terms[0]->Term != NULL) { 
-    std::cout << "\nnull\n"<<Terms.size();
+     //   std::cout << "\ntwo\n"<<Terms.size();
+        Terms[0] = Terms[0]->Term;
+       /*
         TermAST *ptr = new TermAST(*(Terms[0]->Term));
-    std::cout << "\nnull\n";
         SAFE_DELETE(Terms[0]);
-    std::cout << "\nnull\n";
         Terms[0] = ptr;
+        */
     } else {
-    std::cout << "\nnull\n";
+        Terms[0] = NULL;
     }
-    std::cout << "asffafadfaffaafffaafsd\n\n";
+    //std::cout << "\nthree\n"<<Terms.size();
     Terms.erase(Terms.begin()+1);
-    std::cout << "asffafadfaffaafffaafsd\n\n";
+    //std::cout << "\nfour\n";
+    //std::cout << Terms.size() <<"\n";
+    //std::cout << "Terms[0] : ";
+    //Terms[0]->PrintDD();
+    //std::cout <<"\n"<<Terms[0]->getValueID() <<"\n";
+    //if(Terms.size()>=2) {
+     //   std::cout << Terms.size()<<"\nTerms[1] : ";
+      //  Terms[1]->PrintDD();
+    //}
+    //std::cout <<"\n";
+    //std::cout << "\nfive\n"<<Terms.size()<<"\n";
     if (Terms[0]->getValueID() == AppTermID &&
-            Terms[0]->Terms.size() == 1) {
-        std::cout << "yatteruzpoi ! ! ! !\n";
+            Terms[0]->Terms.size() == 1) {//Termsのサイズが1でかつTerms[0]がAPPの時Terms[0]を*取り出す*
+        //std::cout << "\nsix\n"<<"\n";
+        ID = Terms[0]->getValueID();
+        DIndex = Terms[0]->DIndex;
+        Name = Terms[0]->Name;
+        //std::cout << "\nseven\n"<<"\n";
+        if (Terms[0]->Term != NULL) {
+        //std::cout << "\neight\n"<<"\n";
+            /*
+            std::cout << Terms[0]->Terms[0]->Term->getValueID() << "\n";
+            std::cout << Terms[0]->Terms[0]->Term->getVar() << "\n";
+            std::cout << Terms[0]->Terms[0]->Term->getDIndex() << "\n";
+            */
+          //  std::cout << Terms[0]->Term<<"\n";
+          //  std::cout << Terms[0]->Term->Terms.size()<<"\n";
+            SAFE_DELETE(Term);
+          //  std::cout << Terms[0]->Term->getValueID()<<"\n";
+            Term = new TermAST(*(Terms[0]->Term));
+        //std::cout << "\nnine\n"<<"\n";
+        } else {
+            Term = NULL;
+        }
+        Terms = Terms[0]->Terms;
+        /*
         Terms[0]->ID = Terms[0]->Terms[0]->getValueID();
         Terms[0]->DIndex = Terms[0]->Terms[0]->DIndex;
         Terms[0]->Name = Terms[0]->Terms[0]->Name;
-        std::cout << "pohrr";
         if (Terms[0]->Terms[0]->Term != NULL) {
-            std::cout << "''''''''''''''''''''''''''''\n";
             std::cout << Terms[0]->Terms[0]->Term->getValueID() << "\n";
             std::cout << Terms[0]->Terms[0]->Term->getVar() << "\n";
             std::cout << Terms[0]->Terms[0]->Term->getDIndex() << "\n";
             SAFE_DELETE(Terms[0]->Term);
             Terms[0]->Term = new TermAST(*(Terms[0]->Terms[0]->Term));
         } else {
-            std::cout <<"oraoraoraora\n";
             Terms[0]->Term = NULL;
         }
         Terms[0]->Terms.clear();
-        std::cout << "''''''''''''''''''''''''''''\n";
         for (auto itr : Terms[0]->Terms[0]->Terms) {
             Terms[0]->Terms.push_back(new TermAST(*itr));
-        }
+        }*/
     }
-    std::cout <<"\n";
-        std::cout << "pohrr";
     if (Terms.size() == 1 && ID == AppTermID) {
         ID = Terms[0]->getValueID();
         DIndex = Terms[0]->DIndex;
         Name = Terms[0]->Name;
-        std::cout << "pohrr";
         if (Terms[0]->Term != NULL) {
             Term = new TermAST(*(Terms[0]->Term));
         } else {
             Term = NULL;
         }
-        Terms.clear();
-        for (auto itr : Terms[0]->Terms) {
-            Terms.push_back(new TermAST(*itr));
-        }
+        Terms = Terms[0]->Terms;
     }
-        std::cout << "pohrr";
     return;
 }
 

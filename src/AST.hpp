@@ -43,6 +43,7 @@ class ToplevelAST : public BaseAST{
 
     public:
         void PrintDD();
+        void PrintL();
         ToplevelAST(TermAST *term, std::map<std::string, int> &ctx) : Term(term), BaseAST(ToplevelID), Ctx(ctx) {}
         ToplevelAST(TermAST *term) : Term(term), BaseAST(ToplevelID) {}
         ~ToplevelAST();
@@ -77,7 +78,6 @@ class TermAST : public BaseAST {
     public:
         TermAST(std::vector<TermAST*> terms) 
             : BaseAST(AppTermID), Term(NULL), DIndex(-1) {
-                Terms.clear();
                 for (auto itr: terms) {
                     Terms.push_back(new TermAST(*itr));
                 }
@@ -109,6 +109,7 @@ class TermAST : public BaseAST {
         }
         //void Print();
         void PrintDD();
+        void PrintL();
         void setDIndex(int n) {
             DIndex = n;
         }
@@ -120,7 +121,7 @@ class TermAST : public BaseAST {
         }
         void toDeBrujin(std::map<std::string, int> &ctx, std::vector<std::string> env);
         //void PrintD();
-        void subst(int var, TermAST *term);
+        void subst(int var, TermAST term);
         void shift(int d, int c);
         void apply();
         void Printtm(std::map<std::string, int> &ctx, std::vector<std::string> env);

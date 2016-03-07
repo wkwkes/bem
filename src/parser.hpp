@@ -38,6 +38,9 @@ typedef class Parser {
         ToplevelAST *getTA() {
             return TA;
         }
+        void PrintL() {
+            TA->PrintL();
+        }
         void Print() {
             TA->Print();
         }/*

@@ -11,14 +11,26 @@ int main(int argc, char **argv) {
         parser->getToplevelAST()->toDeBrujin();
    //     parser->PrintDD();
     //    std::cout<< "\n";
-       // parser->getToplevelAST()->getTerm()->apply();
+//        std::cout<<"始め: ";
+  //      parser->getToplevelAST()->getTerm()->PrintDD();
+  //      std::cout << "\n";
+//        parser->getToplevelAST()->getTerm()->apply();
     //    std::cout << "^^^^\n";
-        parser->getToplevelAST()->getTerm()->PrintDD();
+ //       parser->getToplevelAST()->getTerm()->PrintDD();
+   //     std::cout << "\n^^^^\n";
+        //parser->getToplevelAST()->getTerm()->apply();
+        //parser->getToplevelAST()->heval();
+//        std::cout << "\n-------------------------------\n";
+        
+    //    parser->getToplevelAST()->getTerm()->apply();
+    //    std::cout << "^^^^\n";
+      //  parser->getToplevelAST()->getTerm()->PrintDD();
    //     std::cout << "\n^^^^\n";
         //parser->getToplevelAST()->getTerm()->apply();
         parser->getToplevelAST()->heval();
-        parser->PrintDD();
-        std::cout << "\n";
+   //     std::cout << "\n";
+   //     parser->PrintDD();
+   //     std::cout << "\n";
         parser->Gen();
         std::cout << "\n";
     } else {

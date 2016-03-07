@@ -3,6 +3,9 @@
 Parser::Parser(std::string filename) {
     Tokens = LexicalAnalysis(filename);
     Ctx = Tokens->getCtx();
+//    for (auto itr : Ctx) {
+//        std::cout << itr.first <<" : "<<itr.second << std::endl;
+//   }
 //    Tokens->printTokens();
 }
 
