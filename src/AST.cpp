@@ -24,10 +24,6 @@ void ToplevelAST::toDeBrujin() {
 }
 
 void ToplevelAST::Gen() {
-    std::cout << "\\documentclass[dvipdfmx]{jsarticle}\n \\usepackage{tikz-qtree}\n \\begin{document}\n";
-    Term->PrintL();
-    std::cout << "\n";
-    std::cout << "\n\\Tree ";
     Term->Gen(Ctx, *new std::vector<std::string>(), true);
     std::cout << "\n\\end{document}";
 }
@@ -37,9 +33,9 @@ void ToplevelAST::heval() {
     while (Term->isEvalable() && count <= 1000) {
         //Term->getTerm(0)->hbeta();
         Term->apply();
-        std::cout << count << " : ";
-        Term->PrintDD();
-        std::cout << "\n";
+        //std::cout << count << " : ";
+        //Term->PrintDD();
+        //std::cout << "\n";
         count++;
     }   
 }

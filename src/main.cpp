@@ -27,10 +27,14 @@ int main(int argc, char **argv) {
       //  parser->getToplevelAST()->getTerm()->PrintDD();
    //     std::cout << "\n^^^^\n";
         //parser->getToplevelAST()->getTerm()->apply();
-        parser->getToplevelAST()->heval();
    //     std::cout << "\n";
    //     parser->PrintDD();
    //     std::cout << "\n";
+        std::cout << "\\documentclass[dvipdfmx]{jsarticle}\n \\usepackage{tikz-qtree,amsmath,amssymb,amsfonts}\n \\begin{document}\n";
+        parser->getToplevelAST()->getTerm()->PrintL();
+        std::cout<<"\\hspace{20pt}\n$\\underset{\\small{\\beta}}{\\twoheadrightarrow}$";
+        std::cout << "\n\\Tree ";
+        parser->getToplevelAST()->heval();
         parser->Gen();
         std::cout << "\n";
     } else {
