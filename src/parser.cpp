@@ -3,10 +3,6 @@
 Parser::Parser(std::string filename) {
     Tokens = LexicalAnalysis(filename);
     Ctx = Tokens->getCtx();
-//    for (auto itr : Ctx) {
-//        std::cout << itr.first <<" : "<<itr.second << std::endl;
-//   }
-//    Tokens->printTokens();
 }
 
 bool Parser::doParse() {
@@ -27,7 +23,6 @@ ToplevelAST &Parser::getAST() {
 }
 
 bool Parser::visitToplevel() {
-    //とりあえず一つのラムダ項のみ許す感じでいくが最終的にはwhileで処理する
     TA = new ToplevelAST(visitTerm(), Ctx);
     if(TA) {
         return true;
@@ -37,25 +32,20 @@ bool Parser::visitToplevel() {
 
 TermAST *Parser::visitTerm() {
     if(Tokens->getCurType() == TOK_LAM) {
-        //std::cout <<"TOK_LAM:" <<Tokens->getCurString() << std::endl;
         if(!Tokens->nextToken()) {//var
             std::cout << "error in lexer (visitTerm1)\n";
             return NULL;
         }
-        //std::cout <<"var    :" <<Tokens->getCurString() << std::endl;
         std::string var = Tokens->getCurString();
         if(!Tokens->nextToken()) {//DOT
             std::cout << "error in lexer (visitTerm2)\n";
             return NULL;
         }
-        //std::cout <<"dot    :" <<Tokens->getCurString() << std::endl;
         if(!Tokens->nextToken()) {//term
             std::cout << "error in lexer (visitTerm1)\n";
             return NULL;
         }
-        //std::cout <<"term   :\n(";
         TermAST *term = visitTerm();
-        //std::cout <<")\n";
         return new TermAST(var, term);
     } else {
         std::vector<TermAST*> terms(0);
@@ -86,39 +76,3 @@ TermAST *Parser::visitTerm() {
         return new TermAST(terms);
     }
 }
-/*
-
-int main(int argc, char **argv) {
-    Parser *parser = new Parser(argv[1]);
-    //std::cout << "start parsing \n";
-    if(parser->doParse()) {
-//        std::cout << "success";
-//        std::cout << "\nCtx\n"; 
-        parser->getToplevelAST()->toDeBrujin();
-//        parser->Print();
-//        std::cout<<"\n\n";
-//        parser->PrintCtx();
-//        parser->PrintDD();
-//        std::cout <<"^^^^^^^^^^^" <<std::endl;
-        parser->PrintDD();
-        std::cout << "\n";
-        parser->getToplevelAST()->getTerm()->apply();
-//        std::cout<<"\nPrint()\n";
-//        std::cout <<"^^^^^^^^^^^" <<std::endl;
-//        parser->Print();
-        //std::cout<<"\nPrintD()\n";
-//        parser->PrintDD();
-        parser->PrintDD();
-        std::cout<<"\n";
-        parser->PrintD();
-        std::cout<<"\n";
-
-        parser->Gen();
-        std::cout << "\n";
-    } else {
-        std::cout << "error exists\n";
-        parser->Print();
-        std::cout << std::endl;
-    }
-}
-*/

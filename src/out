@@ -1,0 +1,10 @@
+\documentclass[dvipdfmx]{jsarticle}
+ \usepackage{tikz-qtree,amsmath,amssymb,amsfonts}
+ \begin{document}
+($\lambda$p.($\lambda$q.($\lambda$s.($\lambda$z.(p s)(q s z)))))($\lambda$s.($\lambda$z.s (s (s (s (s z))))))($\lambda$s.($\lambda$z.s (s z)))
+
+\hspace{20pt}
+$\underset{\small{\beta}}{\twoheadrightarrow}$
+
+\Tree [. { $\lambda s'. $  } [. { $\lambda z'. $ $s'$ } [. $s'$ [. $s'$ [. $s'$ [. $s'$ [. $s'$ [. $s'$ $z'$  ]   ]   ]   ]   ]   ]  ]  ] 
+\end{document}
