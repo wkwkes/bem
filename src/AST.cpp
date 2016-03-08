@@ -30,9 +30,10 @@ void ToplevelAST::Gen() {
 
 void ToplevelAST::heval() {
     int count = 0;
-    while (Term->isEvalable() && count <= 1000) {
+    while (/*Term->isEvalable() &&*/ count <= 1000) {
         //Term->getTerm(0)->hbeta();
-        Term->apply();
+        //Term->apply();
+        Term->hbeta();
         //std::cout << count << " : ";
         Term->PrintL();
         std::cout << "\n\n";
@@ -40,45 +41,30 @@ void ToplevelAST::heval() {
     }   
 }
 
-/*
-void TermAST::Print() {
-    if (ID == AbsTermID) {
-        std::cout << "λ"<<".";
-        Term->PrintD();
-    } else if (ID == AppTermID) {
-        for (int i = 0; i < Terms.size(); i++) {
-            if(Terms.at(i)->getValueID() != VarID) {
-                std::cout << "(";
-                Terms.at(i)->PrintD();
-                std::cout << ")";
-            } else {
-                Terms.at(i)->PrintD();
-                if(i != Terms.size()-1) {
-                    std::cout <<" ";
-                }
-            }
-        }
-    } else if (ID == VarID) {
-        std::cout <<DIndex;
-    } else {
-        std::cout << "some error in TermAST::print()" << std::endl;
-    }
-}
-*/
-/*
 void TermAST::hbeta() {
     if(ID == AbsTermID) {
-        Term->PrintDD();
+        //Term->PrintDD();
         Term->hbeta();
     } else if (ID == AppTermID) {
         if (Terms.size() == 1 && Terms[0]->getValueID() == AbsTermID) {
-            Terms[0]->getTerm()->hbeta();
+            Terms[0]->Term->hbeta();
             return;
         }
-        std::cout <<"a p p l y し　た\n";
-        apply();
+        if (Terms.size()>=2 && Terms[0]->getValueID() == AbsTermID) {
+            apply();
+        }
+        if (Terms.size()>=2 && Terms[0]->getValueID() == VarID) {
+            Terms[1]->apply();
+        }
+        
+        /*
+        if (Terms[0]->getValueID() == AbsTermID) {
+            Terms[0]->getTerm()->hbeta();
+            return;
+        }*/
+        //std::cout <<"a p p l y し　た\n";
     }
-}*/
+}
 
 TermAST::TermAST(const TermAST& term) : BaseAST(term.ID), Name(term.Name), DIndex(term.DIndex), Ctx(term.Ctx) {
     for (auto itr : term.Terms) {
@@ -419,30 +405,43 @@ void TermAST::Gen(std::map<std::string, int> &ctx, std::vector<std::string> env,
                 Term->Terms[0]->Gen(ctx, env, false);
                 Term->Terms.erase(Term->Terms.begin());
             }
-        } else if (Term->getValueID() == VarID) {
-            Term->Gen(ctx, env, false);
         }
-        std::cout << "}";
+        std::cout << "} [. ";
         Term->Gen(ctx, env, false);
+        std::cout <<" ] ";
         if (top) {
             std::cout << " ] ";
         }
     } else if (ID == AppTermID) {
         if (top) {
             std::cout << " [. ";
-            std::cout << " { } ";
+            if (Terms.size() != 1) { 
+                std::cout << " { } ";
+            }
+        }
+        if (Terms.size() == 0) {
+            if (top) {
+                std::cout << " ] ";
+            }
+            return;
+        }
+        if (Terms.size() == 1) {
+            //std::cout <<"afsdfadfas";
+            Terms[0]->Gen(ctx, env, false);
+            if (top) {
+                std::cout << " ] ";
+            }
+            return;
         }
         for (int i = 0; i < Terms.size(); i++) {
-            std::cout << " [. ";/*
-            if (Terms.size() == 1) {
-                std::cout << " { } ";
-            }*/
-            if (/*i == 0 && Terms.size() >= 2 &&*/ Terms[0]->ID == AppTermID) {
-                std::cout << "APP";
+            if (i != 0 || Terms[i]->getValueID() != VarID ) {
+                //std::cout <<"afsdfadfas";
+                std::cout << " [. ";
+                Terms.at(i)->Gen(ctx, env, false);
+                std::cout << " ] ";
+            } else {
+                Terms.at(i)->Gen(ctx, env, false);
             }
-            //std::cout << " hoge ";
-            Terms.at(i)->Gen(ctx, env, false);
-            std::cout << " ] ";
             if(i != Terms.size()-1) {
                 std::cout <<" ";
             }
