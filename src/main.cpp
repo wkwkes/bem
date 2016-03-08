@@ -11,9 +11,9 @@ int main(int argc, char **argv) {
         parser->getToplevelAST()->toDeBrujin();
    //     parser->PrintDD();
     //    std::cout<< "\n";
-//        std::cout<<"始め: ";
-  //      parser->getToplevelAST()->getTerm()->PrintDD();
-  //      std::cout << "\n";
+        std::cout<<"始め: ";
+        parser->getToplevelAST()->getTerm()->PrintDD();
+        std::cout << "\n";
 //        parser->getToplevelAST()->getTerm()->apply();
     //    std::cout << "^^^^\n";
  //       parser->getToplevelAST()->getTerm()->PrintDD();
@@ -32,9 +32,10 @@ int main(int argc, char **argv) {
    //     std::cout << "\n";
         std::cout << "\\documentclass[dvipdfmx]{jsarticle}\n \\usepackage{tikz-qtree,amsmath,amssymb,amsfonts}\n \\begin{document}\n";
         parser->getToplevelAST()->getTerm()->PrintL();
-        std::cout<<"\\hspace{20pt}\n$\\underset{\\small{\\beta}}{\\twoheadrightarrow}$";
-        std::cout << "\n\\Tree ";
+        std::cout<<"\n\n\\hspace{20pt}\n$\\underset{\\small{\\beta}}{\\twoheadrightarrow}$\n\n";
         parser->getToplevelAST()->heval();
+        parser->getToplevelAST()->getTerm()->PrintL();
+        std::cout << "\n\n\\Tree ";
         parser->Gen();
         std::cout << "\n";
     } else {
