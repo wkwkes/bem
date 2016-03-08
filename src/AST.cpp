@@ -33,17 +33,72 @@ void ToplevelAST::heval() {
     while (/*Term->isEvalable() &&*/ count <= 1000) {
         //Term->getTerm(0)->hbeta();
         //Term->apply();
-        Term->hbeta();
+        Term->hbeta(0);
         //std::cout << count << " : ";
-        Term->PrintL();
-        std::cout << "\n\n";
+        //Term->PrintL();
+        //std::cout << "\n\n";
         count++;
-    }   
+    }   /*
+    if count == 1000 {
+        Term = NULL;
+    }*/
 }
 
+void TermAST::hbeta(int times) {
+    times++;
+    if (times >= 10) {
+        std::cout << "This term don't have hnf\n";
+        return;
+    }
+    if (ID == VarID) {
+        return;
+    }
+    if (ID == AppTermID) {
+        if (Terms[0]->getValueID() == VarID) {
+            if (Terms.size() == 1) {
+                return;
+            } else {
+                for(auto itr : Terms) {
+                    itr->hbeta(times);
+                }
+            }
+        }
+        if (Terms[0]->getValueID() == AbsTermID) {
+            if (Terms.size() >= 2) {
+                apply();
+            } else {
+                Terms[0]->hbeta(times);
+                return;
+            }
+            hbeta(times);
+        }
+        if (Terms[0]->getValueID() == AppTermID) {
+            for (int i = 1; i < Terms.size(); i++) {
+                Terms[0]->Terms.push_back(Terms[i]);
+            }
+            Terms = Terms[0]->Terms;
+            hbeta(times);
+        }
+    }
+    if (ID == AbsTermID) {
+        Term->hbeta(times);
+        /*
+        if (Term->Terms[0]->getValueID() == AbsTermID && Terms.size() == 1) {
+            Terms[0]->hbeta();
+        }
+        if (Term->Terms[0]->getValueID() == VarID) {
+            return;
+        }
+        if (Term->Terms[0]->getValueID() == AbsTermID) {
+            Term->apply();
+            hbeta();
+        }*/
+    }
+}
+
+/*
 void TermAST::hbeta() {
     if(ID == AbsTermID) {
-        //Term->PrintDD();
         Term->hbeta();
     } else if (ID == AppTermID) {
         if (Terms.size() == 1 && Terms[0]->getValueID() == AbsTermID) {
@@ -52,19 +107,13 @@ void TermAST::hbeta() {
         }
         if (Terms.size()>=2 && Terms[0]->getValueID() == AbsTermID) {
             apply();
+            return;
         }
         if (Terms.size()>=2 && Terms[0]->getValueID() == VarID) {
             Terms[1]->apply();
         }
-        
-        /*
-        if (Terms[0]->getValueID() == AbsTermID) {
-            Terms[0]->getTerm()->hbeta();
-            return;
-        }*/
-        //std::cout <<"a p p l y し　た\n";
     }
-}
+}*/
 
 TermAST::TermAST(const TermAST& term) : BaseAST(term.ID), Name(term.Name), DIndex(term.DIndex), Ctx(term.Ctx) {
     for (auto itr : term.Terms) {
@@ -328,12 +377,12 @@ void TermAST::subst(int var, TermAST term) {//[t1 -> t2]this
     }
 }
 void TermAST::apply() {
-    std::cout << "apply: "<<"ID("<<ID<<"), "<<"Terms.size()("<<Terms.size()<<")\n";
-    for (int i = 0; i < Terms.size(); i++) {
-        std::cout << "Terms["<<i<<"] : ";
-        Terms[i]->PrintDD();
-        std::cout<<std::endl;
-    }
+    /* std::cout << "apply: "<<"ID("<<ID<<"), "<<"Terms.size()("<<Terms.size()<<")\n";
+       for (int i = 0; i < Terms.size(); i++) {
+       std::cout << "Terms["<<i<<"] : ";
+       Terms[i]->PrintDD();
+       std::cout<<std::endl;
+       }*/
     if(Terms.size() < 2) {
         std::cout << "error: too few terms\n";
         return;
@@ -351,11 +400,12 @@ void TermAST::apply() {
         Terms[0] = NULL;
     }
     Terms.erase(Terms.begin()+1);
-    for (int i = 0; i < Terms.size(); i++) {
-        std::cout << "Terms["<<i<<"] : ";
-        Terms[i]->PrintDD();
-        std::cout<<std::endl;
-    }
+    /*
+       for (int i = 0; i < Terms.size(); i++) {
+       std::cout << "Terms["<<i<<"] : ";
+       Terms[i]->PrintDD();
+       std::cout<<std::endl;
+       }*/
     if (Terms[0]->getValueID() == AppTermID &&
             Terms[0]->Terms.size() == 1) {//Termsのサイズが1でかつTerms[0]がAPPの時Terms[0]を*取り出す*
         Terms[0]->ID = Terms[0]->Terms[0]->getValueID();
@@ -368,12 +418,12 @@ void TermAST::apply() {
             Terms[0]->Term = NULL;
         }
         Terms[0]->Terms = Terms[0]->Terms[0]->Terms;
-    }
-    for (int i = 0; i < Terms.size(); i++) {
+    }/*
+        for (int i = 0; i < Terms.size(); i++) {
         std::cout << "Terms["<<i<<"] : ";
         Terms[i]->PrintDD();
         std::cout<<std::endl;
-    }
+        }*/
     if (Terms.size() == 1 && ID == AppTermID) {
         ID = Terms[0]->getValueID();
         DIndex = Terms[0]->DIndex;
@@ -384,21 +434,20 @@ void TermAST::apply() {
             Term = NULL;
         }
         Terms = Terms[0]->Terms;
-    }
-    std::cout << "\n PrintDD() : ";
-    PrintDD();
+    }/*
+        std::cout << "\n PrintDD() : ";
+        PrintDD();
 
-    std::cout << "\n Terms.size() = "<<Terms.size() <<"\n";
-
+        std::cout << "\n Terms.size() = "<<Terms.size() <<"\n";
+        */
     return;
 }
+
 
 void TermAST::Gen(std::map<std::string, int> &ctx, std::vector<std::string> env, bool top) {
     if (ID == AbsTermID) {
         env.push_back(pickfresh(ctx, env, Name));
-        if (top) {
-            std::cout << "[. ";
-        }
+        std::cout << "[. ";
         std::cout << "{ $\\lambda "<<env[env.size() - 1] << ". $ ";
         if(Term->getValueID() == AppTermID) {
             if (Term->Terms[0]->getValueID() == VarID) {
@@ -406,52 +455,39 @@ void TermAST::Gen(std::map<std::string, int> &ctx, std::vector<std::string> env,
                 Term->Terms.erase(Term->Terms.begin());
             }
         }
-        std::cout << "} [. ";
+        std::cout << " } ";
         Term->Gen(ctx, env, false);
-        std::cout <<" ] ";
-        if (top) {
-            std::cout << " ] ";
-        }
+        std::cout << " ] ";
     } else if (ID == AppTermID) {
-        if (top) {
-            std::cout << " [. ";
-            if (Terms.size() != 1) { 
-                std::cout << " { } ";
-            }
-        }
-        if (Terms.size() == 0) {
-            if (top) {
-                std::cout << " ] ";
-            }
-            return;
-        }
         if (Terms.size() == 1) {
-            //std::cout <<"afsdfadfas";
             Terms[0]->Gen(ctx, env, false);
+            return;
+        }
+        if (Terms[0]->getValueID() == VarID) {
+            std::cout << "[. ";
+            //std::cout << " [. ";
+            Terms[0]->Gen(ctx, env, false);
+            std::cout << " ";
+            for (int i = 1; i < Terms.size(); i++) {
+                Terms.at(i)->Gen(ctx, env, false);
+                std::cout << " ";
+            }
+            std::cout << " ] ";
+        } else { 
+            if (top) {
+                std::cout << "[. { } ";
+            }
+            //std::cout << " { } ";
+            for (int i = 0; i < Terms.size(); i++) {
+                Terms.at(i)->Gen(ctx, env, false);
+            }
             if (top) {
                 std::cout << " ] ";
             }
-            return;
-        }
-        for (int i = 0; i < Terms.size(); i++) {
-            if (i != 0 || Terms[i]->getValueID() != VarID ) {
-                //std::cout <<"afsdfadfas";
-                std::cout << " [. ";
-                Terms.at(i)->Gen(ctx, env, false);
-                std::cout << " ] ";
-            } else {
-                Terms.at(i)->Gen(ctx, env, false);
-            }
-            if(i != Terms.size()-1) {
-                std::cout <<" ";
-            }
-        }
-        if (top) {
-            std::cout << " ] ";
         }
     } else if (ID == VarID) {
         if (top) {
-            std::cout << " [. ";
+            std::cout << "[. ";
         }
         if (DIndex < env.size()) {
             std::cout <<"$" << env[env.size()-1-DIndex] <<"$";

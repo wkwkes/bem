@@ -34,8 +34,13 @@ int main(int argc, char **argv) {
         parser->getToplevelAST()->getTerm()->PrintL();
         std::cout<<"\n\n\\hspace{20pt}\n$\\underset{\\small{\\beta}}{\\twoheadrightarrow}$\n\n";
 //        parser->getToplevelAST()->heval();
-        parser->getToplevelAST()->getTerm()->hbeta();
+        parser->getToplevelAST()->getTerm()->hbeta(0);
+        parser->getToplevelAST()->getTerm()->hbeta(0);
+        parser->getToplevelAST()->getTerm()->hbeta(0);
+        parser->getToplevelAST()->getTerm()->hbeta(0);
+        std::cout <<"\nPrint---->";
         parser->getToplevelAST()->getTerm()->PrintDD();
+        std::cout <<"\n";
         std::cout << std::endl;
         parser->getToplevelAST()->getTerm()->PrintL();
         std::cout << "\n\n\\Tree ";

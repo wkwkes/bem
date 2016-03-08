@@ -132,7 +132,7 @@ class TermAST : public BaseAST {
         int getTermssize() {
             return Terms.size();
         }
-        void hbeta();
+        void hbeta(int);
 };
 
 #endif
