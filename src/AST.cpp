@@ -30,7 +30,7 @@ void ToplevelAST::Gen() {
 
 void ToplevelAST::heval() {
     int count = 0;
-    while (count <= 1000) {
+    while (count <= 100) {
         Term->hbeta(0);
         count++;
     }   
@@ -38,7 +38,7 @@ void ToplevelAST::heval() {
 
 void TermAST::hbeta(int times) {
     times++;
-    if (times >= 100) {
+    if (times >= 50) {
         return;
     }
     if (ID == VarID) {
@@ -384,7 +384,7 @@ void TermAST::Gen(std::map<std::string, int> &ctx, std::vector<std::string> env,
         env.push_back(pickfresh(ctx, env, Name));
         std::cout << "[. ";
         std::cout << "{ $\\lambda "<<env[env.size() - 1];
-        if(Term->Terms[0]->getValueID() == AbsTermID && Term->Terms.size() == 1) {
+        while(Term->Terms[0]->getValueID() == AbsTermID && Term->Terms.size() == 1) {
             env.push_back(pickfresh(ctx, env, Term->Terms[0]->getVar()));
             std::cout << " "<< env[env.size() - 1];
             Term = Term->Terms[0]->Term;
